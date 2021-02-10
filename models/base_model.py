@@ -48,7 +48,7 @@ class BaseModel:
         Method that updated the date and time of a BaseModel object
         """
         self.updated_at = datetime.datetime.now()
-        storage.save(self)
+        storage.save()
 
     def to_dict(self):
         """Method that returns a dictionary containing all keys/values of
