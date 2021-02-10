@@ -3,12 +3,14 @@
 """
 import uuid
 import datetime
+from models import storage
 
 
 class BaseModel:
     """
     Class that defines all common attributes/methods for other classes
     """
+
     def __init__(self, *args, **kwargs):
         """
         Class constructor
@@ -16,7 +18,8 @@ class BaseModel:
         if bool(kwargs) is True:
             for key in kwargs.keys():
                 if key == "created_at" or key == "updated_at":
-                    datetime_obj = datetime.datetime.strptime(kwargs[key], '%Y-%m-%dT%H:%M:%S.%f')
+                    datetime_obj = datetime.datetime.strptime(
+                        kwargs[key], '%Y-%m-%dT%H:%M:%S.%f')
                     setattr(self, key, datetime_obj)
                 elif key != "__class__":
                     setattr(self, key, kwargs[key])
@@ -24,6 +27,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.datetime.now()
             self.updated_at = datetime.datetime.now()
+        storage.new(self)
 
     def __str__(self):
         """Method that override the str method and returns a specific string
@@ -44,6 +48,7 @@ class BaseModel:
         Method that updated the date and time of a BaseModel object
         """
         self.updated_at = datetime.datetime.now()
+        storage.save(self)
 
     def to_dict(self):
         """Method that returns a dictionary containing all keys/values of
