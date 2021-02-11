@@ -2,21 +2,23 @@
 import json
 from models.base_model import BaseModel
 
+
 class FileStorage:
-    """ Class Storage """
+    """
+    Class Storage
+    """
     __file_path = "file.json"
     __objects = {}
 
-#    def __init__(self):
-#        """ Class constructor """
-#        pass
-
     def all(self):
-        """ returns the dictionary """
+        """
+        Returns the dictionary
+        """
         return self.__objects
 
     def new(self, obj):
-        """sets in __objects the obj with key <obj class name>.id
+        """
+        Sets in __objects the obj with key <obj class name>.id
         """
         # print("\n\n\n\n\n")
         # print("############### Objeto solo #########################")
@@ -27,20 +29,21 @@ class FileStorage:
         self.__objects[key] = obj
         # print("---------------->dict", obj.to_dict())
 
-
     def save(self):
-        """serializes __objects to the JSON file (path: __file_path)"""
+        """
+        serializes __objects to the JSON file (path: __file_path)
+        """
 #       print("=====OBJECTS=====\n",self.__objects,"\n=========")
         filename = self.__file_path
         dct = {}
         for key in self.__objects.keys():
             dct[key] = self.__objects[key].to_dict()
         with open(filename, "w") as f:
-            f.write(json.dumps(dct))  
+            f.write(json.dumps(dct))
 
     def reload(self):
-        """ deserializes the JSON file to __objects (only if the JSON file """
-        
+        """ Deserializes the JSON file to __objects (only if the JSON file
+        """
         filename = self.__file_path
         try:
             with open(filename, "r") as f:
