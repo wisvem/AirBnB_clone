@@ -7,6 +7,7 @@ from models.base_model import BaseModel
 from models import storage
 # import argparse
 import shlex
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -14,7 +15,7 @@ class HBNBCommand(cmd.Cmd):
     Command processor class
     """
     prompt = '(hbnb) '
-    listclass = ['BaseModel']
+    listclass = ['BaseModel', 'User']
     # Inicializé all_obj acá arriba para poder cambiar el orden en que se
     # evaluan las condiciones del update
     # También cambié donde teniasmos all_obj por self.all_obj
@@ -25,6 +26,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         'EOF method to exit cmd program\n'
+        print()
         return True
 
     def do_quit(self, arg):
@@ -39,7 +41,7 @@ class HBNBCommand(cmd.Cmd):
         'Method to create a instance BaseModel and save it in JSON file\n'
         if bool(arg) is False:
             print("** class name missing **")
-        elif arg != 'BaseModel':
+        elif arg not in self.listclass:
             print("** class doesn't exist **")
         else:
             my_model = eval(arg)()
@@ -102,7 +104,7 @@ class HBNBCommand(cmd.Cmd):
             if found_class is True:
                 print(mylist)
         else:
-            for key, value in all_objs.items():
+            for key, value in self.all_objs.items():
                 if arg == value.__class__.__name__:
                     obj = self.all_objs[key]
                     mylist.append(str(obj))
