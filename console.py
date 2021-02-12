@@ -13,8 +13,9 @@ class HBNBCommand(cmd.Cmd):
     """
     Command processor class
     """
+
     prompt = '(hbnb) '
-    listclass = ['BaseModel']
+    listclass = ['BaseModel', 'User']
     # Inicializé all_obj acá arriba para poder cambiar el orden en que se
     # evaluan las condiciones del update
     # También cambié donde teniasmos all_obj por self.all_obj
@@ -102,7 +103,7 @@ class HBNBCommand(cmd.Cmd):
             if found_class is True:
                 print(mylist)
         else:
-            for key, value in all_objs.items():
+            for key, value in self.all_objs.items():
                 if arg == value.__class__.__name__:
                     obj = self.all_objs[key]
                     mylist.append(str(obj))
@@ -167,4 +168,10 @@ class HBNBCommand(cmd.Cmd):
 
 
 if __name__ == '__main__':
-    HBNBCommand().cmdloop()
+    import sys
+    if len(sys.argv) > 1:
+        # Uses non interactive
+        HBNBCommand().onecmd(' '.join(sys.argv[1:]))
+    else:
+        # Uses interactive mode
+        HBNBCommand(stdin=input).cmdloop()
