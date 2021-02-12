@@ -7,6 +7,7 @@ from models.base_model import BaseModel
 from models import storage
 # import argparse
 import shlex
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -26,6 +27,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         'EOF method to exit cmd program\n'
+        print()
         return True
 
     def do_quit(self, arg):
@@ -40,7 +42,7 @@ class HBNBCommand(cmd.Cmd):
         'Method to create a instance BaseModel and save it in JSON file\n'
         if bool(arg) is False:
             print("** class name missing **")
-        elif arg != 'BaseModel':
+        elif arg not in self.listclass:
             print("** class doesn't exist **")
         else:
             my_model = eval(arg)()

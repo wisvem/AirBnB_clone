@@ -70,5 +70,5 @@ class BaseModel:
                 dict_attrs[key] = value
             else:
                 dict_attrs[key] = getattr(self, key)
-        dict_attrs["__class__"] = __class__.__name__
+        dict_attrs["__class__"] = self.__class__.__name__
         return dict_attrs
