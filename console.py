@@ -8,6 +8,11 @@ from models import storage
 # import argparse
 import shlex
 from models.user import User
+from models.place import Place
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
+from models.state import State
 
 
 class HBNBCommand(cmd.Cmd):
@@ -16,14 +21,10 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = '(hbnb) '
-    listclass = ['BaseModel', 'User']
-    # Inicializé all_obj acá arriba para poder cambiar el orden en que se
-    # evaluan las condiciones del update
-    # También cambié donde teniasmos all_obj por self.all_obj
-    # E códi pasa pep8, y ahora mismo son las 2.30 y abajo vas a encontrar una
-    # historia que la escribi a las 2
+    listclass = ['BaseModel', 'User', 'Place', 'City', 'Amenity', 'Review', 'State']
+    list_int = ['number_rooms', 'number_bathrooms', 'max_guest', 'price_by_night']
+    list_float = ['latitude', 'longitude']
     all_objs = storage.all()
-    # parser = argparse.ArgumentParser()
 
     def do_EOF(self, arg):
         'EOF method to exit cmd program\n'
@@ -117,25 +118,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, arg):
         'Updates an obj based on the class name and id by adding or updating\n'
-        # mylist = str.split(arg)
         mylist = shlex.split(arg)
-        # print(m2)
-        # exit()
-        """
-        Si pude lograrlo, son las 2AM, por si no me ves levantado tan temprano
-        Cambie todos los str.split por shlex.split para que no lo hiciera por
-        los espacios sino por los argumentos
-        y pudiera tener en cuenta las comillas dobles-----
-
-        Dani est de aqui está comentado porque los argumentos no están entrando
-        correctamente.
-        el metodo ya me actualiza el objeto pero no acepta ls comillas dobles.
-        Cuando se usan comillas dobles para el valor del nuevo atributo se
-        actualiza el objeto con varios backslash
-        el metodo split separa los argumentos por espacio, si se envia un
-        "Daniel Cortes" el split devulce "Daniel, Cortes"
-
-        """
         myobj = None
         found_id = False
         if bool(arg) is False:
@@ -152,8 +135,6 @@ class HBNBCommand(cmd.Cmd):
             for key, value in self.all_objs.items():
                 if key == search:
                     myobj = self.all_objs[key]
-                #    setattr(myobj, mylist[2], mylist[3])
-                #    myobj.save()
                     found_id = True
                     break
             if found_id is False:
@@ -164,6 +145,10 @@ class HBNBCommand(cmd.Cmd):
         elif len(mylist) < 4:
             print("** value missing **")
         else:
+            if mylist[2] in self.list_int:
+                mylist[3] = int(mylist[3])
+            elif mylist[2] in self.list_float:
+                mylist[3] = float(mylist[3])
             setattr(myobj, mylist[2], mylist[3])
             myobj.save()
             found_id = True
