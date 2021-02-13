@@ -21,9 +21,12 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = '(hbnb) '
-    listclass = ['BaseModel', 'User', 'Place', 'City', 'Amenity', 'Review', 'State']
-    list_int = ['number_rooms', 'number_bathrooms', 'max_guest', 'price_by_night']
-    list_float = ['latitude', 'longitude']
+    # Class name list
+    clis = ['BaseModel', 'User', 'Place', 'City', 'Amenity', 'Review', 'State']
+    # Int attribute name list
+    ilist = ['number_rooms', 'number_bathrooms', 'max_guest', 'price_by_night']
+    # Float attribute name list
+    flist = ['latitude', 'longitude']
     all_objs = storage.all()
 
     def do_EOF(self, arg):
@@ -43,7 +46,7 @@ class HBNBCommand(cmd.Cmd):
         'Method to create a instance BaseModel and save it in JSON file\n'
         if bool(arg) is False:
             print("** class name missing **")
-        elif arg not in self.listclass:
+        elif arg not in self.clis:
             print("** class doesn't exist **")
         else:
             my_model = eval(arg)()
@@ -56,7 +59,7 @@ class HBNBCommand(cmd.Cmd):
         found_id = False
         if bool(arg) is False:
             print("** class name missing **")
-        elif mylist[0] not in self.listclass:
+        elif mylist[0] not in self.clis:
             print("** class doesn't exist **")
         elif len(mylist) != 2:
             print("** instance id missing **")
@@ -77,7 +80,7 @@ class HBNBCommand(cmd.Cmd):
         found_id = False
         if bool(arg) is False:
             print("** class name missing **")
-        elif mylist[0] not in self.listclass:
+        elif mylist[0] not in self.clis:
             print("** class doesn't exist **")
         elif len(mylist) != 2:
             print("** instance id missing **")
@@ -124,7 +127,7 @@ class HBNBCommand(cmd.Cmd):
         if bool(arg) is False:
             print("** class name missing **")
             return
-        elif mylist[0] not in self.listclass:
+        elif mylist[0] not in self.clis:
             print("** class doesn't exist **")
             return
         elif len(mylist) < 2:
@@ -145,13 +148,38 @@ class HBNBCommand(cmd.Cmd):
         elif len(mylist) < 4:
             print("** value missing **")
         else:
-            if mylist[2] in self.list_int:
+            if mylist[2] in self.ilist:
                 mylist[3] = int(mylist[3])
-            elif mylist[2] in self.list_float:
+            elif mylist[2] in self.flist:
                 mylist[3] = float(mylist[3])
             setattr(myobj, mylist[2], mylist[3])
             myobj.save()
             found_id = True
+
+    def precmd(self, line):
+        # Make a copy of line
+        cp = line[:]
+        mylist = line.split('.', 1)
+        if len(mylist) < 2:
+            return cp
+        else:
+            mycls = mylist[0]
+            # update("mode", "123-123-123", "name", "juancho")
+            # print("Fase 1 ", mylist[1])
+
+            mylist[1] = mylist[1].replace('(', ', ')
+            # update, "model", "123-123-123", "name", "juancho")
+            # print("Fase 2 ", mylist[1])
+
+            mylist[1] = mylist[1].replace(')', '')
+            # update, "model", "123-123-123", "name", "juancho"
+
+            mycmd = mylist[1].split(', ', 1)[0]
+            mycmd += ' '+mycls+' '+mylist[1].split(', ', 1)[1]
+            mycmd = mycmd.replace(',', '')
+            # print(mycmd)
+            # exit()
+            return mycmd
 
 
 if __name__ == '__main__':
