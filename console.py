@@ -30,20 +30,29 @@ class HBNBCommand(cmd.Cmd):
     all_objs = storage.all()
 
     def do_EOF(self, arg):
-        'EOF method to exit cmd program\n'
+        """
+        EOF method to exit cmd program
+        """
         print()
         return True
 
     def do_quit(self, arg):
-        'Quit method to exit form cmd program\n'
+        """
+        Quit method to exit form cmd program (Usage: quit)
+        """
         return True
 
     def emptyline(self):
-        'Method to should not execute anything'
+        """
+        Method to should not execute anything
+        """
         pass
 
     def do_create(self, arg):
-        'Method to create a instance BaseModel and save it in JSON file\n'
+        """
+        Method to create a instance BaseModel and save it in JSON file
+        [Usage: create <class name>]
+        """
         if bool(arg) is False:
             print("** class name missing **")
         elif arg not in self.clis:
@@ -54,7 +63,12 @@ class HBNBCommand(cmd.Cmd):
             print("{}".format(my_model.id))
 
     def do_show(self, arg):
-        'Prints string representation of an instance by class name and id\n'
+        """
+        Prints string representation of an instance by class name and id
+        [Usage: show <class name> <id>]
+        or
+        [Usage: <class name>.show(<id>)]
+        """
         mylist = shlex.split(arg)
         found_id = False
         if bool(arg) is False:
@@ -75,7 +89,12 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
 
     def do_destroy(self, arg):
-        'Deletes an instance based on the class name and id\n'
+        """
+        Deletes an instance based on the class name and id
+        [Usage: destroy <class name> <id>]
+        or
+        [Usage: <class name>.destroy(<id>)]
+        """
         mylist = shlex.split(arg)
         found_id = False
         if bool(arg) is False:
@@ -97,7 +116,14 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
 
     def do_all(self, arg):
-        'Prints all string repr of all instances based or not on class name\n'
+        """
+        Prints all string repr of all instances based or not on class name
+        [Usage: all <class name>]
+        or
+        [Usage: all]
+        or
+        [Usage: <class name>.all()]
+        """
         # all_objs = storage.all()
         mylist = []
         found_class = False
@@ -120,7 +146,12 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
 
     def do_update(self, arg):
-        'Updates an obj based on the class name and id by adding or updating\n'
+        """
+        Updates an obj based on the class name and id by adding or updating
+        [Usage: update <class name> <id> <attribute name> "<attribute value>]
+        or
+        [Usage: <class name>.update(<id>, <attribute name>, <attribute value>)]
+        """
         mylist = shlex.split(arg)
         myobj = None
         found_id = False
@@ -156,7 +187,24 @@ class HBNBCommand(cmd.Cmd):
             myobj.save()
             found_id = True
 
+    def do_count(self, arg):
+        """
+        Count objects created by class
+        [Usage: <class name>.count()]
+        """
+        counter = 0
+        if bool(arg) is True:
+            for key, value in self.all_objs.items():
+                key_list = key.split('.')
+                cls_name = key_list[0]
+            if cls_name == arg:
+                counter = counter + 1
+            print(counter)
+
     def precmd(self, line):
+        """
+        Method to run same commands as class.method
+        """
         # Make a copy of line
         cp = line[:]
         cp2 = line.split('.', 1)
