@@ -5,7 +5,6 @@ Command processor module
 import cmd
 from models.base_model import BaseModel
 from models import storage
-# import argparse
 import shlex
 from models.user import User
 from models.place import Place
@@ -13,6 +12,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from models.state import State
+from collections import Counter
 
 
 class HBNBCommand(cmd.Cmd):
@@ -159,23 +159,50 @@ class HBNBCommand(cmd.Cmd):
     def precmd(self, line):
         # Make a copy of line
         cp = line[:]
-        mylist = line.split('.', 1)
-        if len(mylist) < 2:
+        cp2 = line.split('.', 1)
+        if len(cp2) < 2:
             return cp
         else:
-            mycls = mylist[0]
+            count1, count2 = cp.count(')'), cp.count('(')
+            endp_p = len(cp)-1
+
+            # Ask if there are more than one parenthesis ocurrence
+            if count1 != 1 or count2 != 1 or ')' != cp[endp_p]:
+                return cp
+            # Check if there no alpha character before (
+            idx = cp.index('(')
+            if cp[idx-1].isalpha() == False:
+                return cp
+
+            # Save "class" name as str
+            mycls = cp2[0]
+
             # update("mode", "123-123-123", "name", "juancho")
+            # update("38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89})
             # print("Fase 1 ", mylist[1])
 
-            mylist[1] = mylist[1].replace('(', ', ')
+            cp2[1] = cp2[1].replace('(', ', ')
             # update, "model", "123-123-123", "name", "juancho")
+            # update, "38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89})
             # print("Fase 2 ", mylist[1])
 
-            mylist[1] = mylist[1].replace(')', '')
+            cp2[1] = cp2[1].replace(')', '')
             # update, "model", "123-123-123", "name", "juancho"
+            # update, "38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89}
 
-            mycmd = mylist[1].split(', ', 1)[0]
-            mycmd += ' '+mycls+' '+mylist[1].split(', ', 1)[1]
+            # Save "command" as str
+            mycmd = cp2[1].split(', ', 1)[0]
+
+            count1, count2 = cp2[1].count('}'), cp2[1].count('{')
+            endp_p = len(cp2[1])-1
+            if mycmd == "update":
+                if count1 == 1 and count2 == 1 and '}' == cp2[1][endp_p]:
+                    pass               
+
+
+#vUser.update("38f22813-2753-4d42-b37c-57a17f1e4f88", 'first_name': "John", "age": 89})
+
+            mycmd += ' '+mycls+' '+cp2[1].split(', ', 1)[1]
             mycmd = mycmd.replace(',', '')
             # print(mycmd)
             # exit()
