@@ -3,6 +3,7 @@
 Command processor module
 """
 import cmd
+import json
 from models.base_model import BaseModel
 from models import storage
 import shlex
@@ -168,7 +169,7 @@ class HBNBCommand(cmd.Cmd):
             search = mylist[0]+'.'+mylist[1]
             for key, value in self.all_objs.items():
                 if key == search:
-                    myobj = self.all_objs[key]
+                    myobj = value
                     found_id = True
                     break
             if found_id is False:
@@ -219,41 +220,46 @@ class HBNBCommand(cmd.Cmd):
                 return cp
             # Check if there no alpha character before (
             idx = cp.index('(')
-            if cp[idx-1].isalpha() == False:
+            if cp[idx-1].isalpha() is False:
                 return cp
 
             # Save "class" name as str
             mycls = cp2[0]
 
-            # update("mode", "123-123-123", "name", "juancho")
-            # update("38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89})
-            # print("Fase 1 ", mylist[1])
+# update("mode", "123-123-123", "name", "juancho")
+# update("38f22813-2753-4d42-b37c-57a17f18",{'first_name':"John","age": 89})
+# print("Fase 1 ", mylist[1])
 
             cp2[1] = cp2[1].replace('(', ', ')
-            # update, "model", "123-123-123", "name", "juancho")
-            # update, "38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89})
-            # print("Fase 2 ", mylist[1])
+# update, "model", "123-123-123", "name", "juancho")
+# update, "38f22813-2753-4d42-b37c-57a178", {'first_name': "John", "age": 89})
+# print("Fase 2 ", mylist[1])
 
             cp2[1] = cp2[1].replace(')', '')
-            # update, "model", "123-123-123", "name", "juancho"
-            # update, "38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89}
+# update, "model", "123-123-123", "name", "juancho"
+# update, "38f22813-2753-4d42-b37c-57a17f8", {'first_name': "John", "age": 89}
 
             # Save "command" as str
             mycmd = cp2[1].split(', ', 1)[0]
-
             count1, count2 = cp2[1].count('}'), cp2[1].count('{')
             endp_p = len(cp2[1])-1
             if mycmd == "update":
+                myargs = cp2[1].split(', ', 1)[1]
+# "38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89}
                 if count1 == 1 and count2 == 1 and '}' == cp2[1][endp_p]:
-                    pass               
 
-
-#vUser.update("38f22813-2753-4d42-b37c-57a17f1e4f88", 'first_name': "John", "age": 89})
+                    myargs = myargs.split(', ', 1)
+                    # Save ID as str
+                    myid = myargs[0]
+                    mydict = eval(myargs[1])
+                    for key, value in mydict.items():
+                        ucmd = mycls+' '+myid+' '+key+' '+'\"'+str(value)+'\"'
+                        self.do_update(ucmd)
+                    return " "
 
             mycmd += ' '+mycls+' '+cp2[1].split(', ', 1)[1]
             mycmd = mycmd.replace(',', '')
-            # print(mycmd)
-            # exit()
+
             return mycmd
 
 
