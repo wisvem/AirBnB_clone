@@ -156,7 +156,18 @@ class HBNBCommand(cmd.Cmd):
             myobj.save()
             found_id = True
 
+    def do_count(self, arg):
+        'Count objects created by class'
+        counter = 0
+        for key, value in self.all_objs.items():
+            key_list = key.split('.')
+            cls_name = key_list[0]
+            if cls_name == arg:
+                counter = counter + 1
+        print(counter)
+
     def precmd(self, line):
+        'Method to run command as class.method'
         # Make a copy of line
         cp = line[:]
         mylist = line.split('.', 1)
