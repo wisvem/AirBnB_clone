@@ -3,6 +3,8 @@
 # AirBnB Clone - Console
 This is the first step towards building the first full web application: the AirBnB clone. The goal of this project is to eventually deploy our server a simple copy of the AirBnB Website(HBnB). A command interpreter is created in this segment to manage objects for the AirBnB(HBnB) website. This first step is very important because we will use what we build during this project with all other following projects: HTML/CSS templating, database storage, API, front-end integration.
 
+![Airbnb clone project](https://i.imgur.com/ovMNyEZ.png)
+
 #### Goal of the Command interpreter :
 * Create a new object (ex: a new User or a new Place)
 * Retrieve an object from a file, a database etc...
