@@ -23,7 +23,7 @@ class Test_engine(unittest.TestCase):
     def setUp(self):
         """set environment to start testing"""
         # Empty objects in engine
-        from models.engine.file_storage import FileStorage
+        FileStorage._FileStorage__objects = {}
         # Remove file.json if exists
         if os.path.exists("file.json"):
             os.remove("file.json")
@@ -69,7 +69,7 @@ class Test_engine(unittest.TestCase):
 
     def test_engine_003(self):
         """Test Place object"""
-        my_model = User()
+        my_model = Place()
         all_objs = storage.all()
         objid = None
         for objid in all_objs:
@@ -131,3 +131,43 @@ class Test_engine(unittest.TestCase):
         # test full object
         objid = {mystr: my_model}
         self.assertEqual(all_objs, objid)
+
+    def test_engine_008(self):
+        """ Save method with base model """
+        filename = "file.json"
+        mymodel = BaseModel()
+        key = mymodel.__class__.__name__+'.'+mymodel.id
+        self.assertFalse(os.path.exists(filename))
+        storage.new(mymodel)
+        storage.save()
+        self.assertTrue(os.path.exists(filename))
+        with open(filename) as f:
+            myobj = json.load(f)
+            self.assertEqual(mymodel.id, myobj[key]["id"])
+            self.assertEqual(mymodel.__class__.__name__,
+                             myobj[key]["__class__"])
+
+    def test_engine_009(self):
+        """Test reload function"""
+        filename = "file.json"
+        mymodel = BaseModel()
+        my_obj = mymodel.__class__.__name__ +'.'+mymodel.id
+        self.assertFalse(os.path.exists(filename))
+        self.assertTrue(len(storage.all()) == 1)
+        storage.save()
+        self.assertTrue(os.path.exists(filename))
+        self.assertTrue(len(storage.all()) == 1)
+        # Empty the __objects to check if reload works
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
+        self.assertTrue(len(storage.all()) == 0)
+        storage.reload()
+        all_obj = storage.all()
+        self.assertFalse(mymodel == all_obj[my_obj])
+        self.assertEqual(mymodel.id, all_obj[my_obj].id)
+        self.assertEqual(mymodel.__class__, all_obj[my_obj].__class__)
+        self.assertEqual(mymodel.created_at, all_obj[my_obj].created_at)
+        self.assertEqual(mymodel.updated_at, all_obj[my_obj].updated_at)
+        self.assertTrue(len(storage.all()) == 1)
+
+
