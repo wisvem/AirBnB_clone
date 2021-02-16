@@ -40,6 +40,8 @@ class Test_engine(unittest.TestCase):
         """Test if all_obs is empty"""
         all_objs = storage.all()
         self.assertEqual(all_objs, {})
+        storage.reload()
+        self.assertEqual(FileStorage._FileStorage__objects, {})
 
     def test_engine_001(self):
         """Test BaseModel object"""
@@ -242,17 +244,11 @@ class Test_engine(unittest.TestCase):
         self.assertEqual(getattr(FileStorage, "_FileStorage__objects"), {})
         self.assertEqual(FileStorage._FileStorage__file_path, "file.json")
 
-    def tool_engine_016(self, classname):
-        """helper func for save tests"""
-        mycls = storage.classes()[classname]
-        obj = mycls()
-        storage.new(obj)
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        storage.save()
-        self.assertTrue(os.path.isfile(FileStorage._FileStorage__file_path))
-        mydic = {key: obj.to_dict()}
-        with open(FileStorage._FileStorage__file_path,
-                  "r", encoding="utf-8") as f:
-            self.assertEqual(len(f.read()), len(json.dumps(mydic)))
-            f.seek(0)
-            self.assertEqual(json.load(f), mydic)
+    # def test_engine_017(self):
+    #     mymodel = BaseModel()
+    #     storage.save()
+    #     filename = "file.json"
+    #     with open(filename, "r") as f:
+    #         newjson = json.load(f)
+    #         self.assertTrue(type(newjson), dict)
+    #         self.assert
