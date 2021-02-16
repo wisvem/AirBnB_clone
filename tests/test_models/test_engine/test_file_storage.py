@@ -225,13 +225,8 @@ class Test_engine(unittest.TestCase):
     #     all_objs = storage.all()
     #     self.assertEqual(mymodel, all_objs[objid])
 
-    def test_empty_reload(self):
-        """ Empty reload function """
-
-        new_obj = BaseModel()
-        storage.new(new_obj)
-        storage.save()
-        my_dict1 = storage.all()
-        storage.reload()
-        my_dict2 = storage.all()
-        self.assertTrue(my_dict2 == my_dict1)
+    def test_all(self):
+        """ Test method all from filestorage """
+        my_obj = FileStorage()
+        my_dict = my_obj.all()
+        self.assertTrue(type(my_dict) == dict)
