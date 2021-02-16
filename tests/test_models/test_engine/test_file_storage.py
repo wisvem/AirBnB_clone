@@ -170,8 +170,8 @@ class Test_engine(unittest.TestCase):
         self.assertEqual(mymodel.updated_at, all_obj[my_obj].updated_at)
         self.assertTrue(len(storage.all()) == 1)
 
-    def test_reload_all_clases(self):
-        """Test reload method for all classes"""
+    def test_engine_010(self):
+        """Test reload whit all classes"""
         filename = "file.json"
         baseobj = BaseModel()
         userobj = User()
@@ -202,3 +202,13 @@ class Test_engine(unittest.TestCase):
             self.assertFalse(i == alldic[eval(ids)])
             self.assertEqual(i.id, alldic[eval(ids)].id)
             self.assertEqual(i.__class__, alldic[eval(ids)].__class__)
+
+    def test_engine_011(self):
+        """Test storage new"""
+        mymodel = BaseModel()
+        key = mymodel.__class__.__name__ +'.'+mymodel.id
+        allobjs = storage.all()
+        self.assertEqual(allobjs, {})
+        storage.new(mymodel)
+        allobjs = storage.all()
+        self.assertEqual(mymodel, allobjs[key])
