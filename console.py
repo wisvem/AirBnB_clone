@@ -166,7 +166,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
                 return
         if len(mylist) < 3:
-            print("attribute name missing")
+            print("** attribute name missing **")
         elif len(mylist) < 4:
             print("** value missing **")
         else:
