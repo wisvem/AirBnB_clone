@@ -23,7 +23,7 @@ class Test_engine(unittest.TestCase):
     def setUp(self):
         """set environment to start testing"""
         # Empty objects in engine
-        FileStorage._FileStorage__objects = {}
+        from models.engine.file_storage import FileStorage
         # Remove file.json if exists
         if os.path.exists("file.json"):
             os.remove("file.json")
@@ -132,25 +132,22 @@ class Test_engine(unittest.TestCase):
         objid = {mystr: my_model}
         self.assertEqual(all_objs, objid)
 
-    def test_engine_008(self):
-        pass
-        # var = 'a'
-        # for i in self.clis:
-        #     exec(var, "= eval(i)()")
-        #     var = var + 1
-        
-
     def test_engine_009(self):
+        "Empty test"
         pass
 
     def test_engine_010(self):
+        "empty test"
         pass
 
     def test_engine_011(self):
+        "empty test"
         pass
 
     def test_engine_012(self):
+        "empty test"
         pass
 
     def test_engine_013(self):
+        "empty test"
         pass

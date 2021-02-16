@@ -2,12 +2,14 @@
 """Unittest for base_model.py file
 """
 import unittest
+import unittest.mock 
 from models.base_model import BaseModel
 from models.user import User
 import os
 import uuid
 import datetime
 from models.engine.file_storage import FileStorage
+import io
 
 
 class Test_User_model(unittest.TestCase):
@@ -18,7 +20,7 @@ class Test_User_model(unittest.TestCase):
     def setUp(self):
         """set environment to start testing"""
         # Empty objects in engine
-        FileStorage._FileStorage__objects = {}
+        from models.engine.file_storage import FileStorage
         # Remove file.json if exists
         if os.path.exists("file.json"):
             os.remove("file.json")
@@ -37,6 +39,7 @@ class Test_User_model(unittest.TestCase):
         """
         model = User()
         self.assertIsInstance(model, User)
+        self.assertIsInstance(model, BaseModel)
         self.assertFalse(type(model) == type(User))
         self.assertFalse(id(model) == id(User))
         model_2 = User()
@@ -117,7 +120,9 @@ class Test_User_model(unittest.TestCase):
         Checks that can add new attributes to the objects
         """
         # Checks new attributes are added
-        dict_attr = {'name': 'Betty', 'last': 'Holberton', 'age': 40}
+        dict_attr = {'first_name': 'Betty',
+                     'last_name': 'Holberton', 'age': 40,
+                     'email': 'wisvem@hotmail.com', 'password': "980336"}
         model = User()
         for key, value in dict_attr.items():
             setattr(model, key, value)
@@ -126,7 +131,8 @@ class Test_User_model(unittest.TestCase):
             self.assertEqual(getattr(model, key), value)
 
         # Checks for all attributes for the object
-        my_attrs = ['id', 'created_at', 'updated_at', 'name', 'last', 'age']
+        my_attrs = ['id', 'created_at', 'updated_at', 'email', 'password',
+                    'first_name', 'last_name', 'age']
         for attr in my_attrs:
             self.assertEqual(attr in model.__dict__.keys(), True)
 
@@ -205,3 +211,29 @@ class Test_User_model(unittest.TestCase):
         self.assertTrue(hasattr(my_new_model, key))
         cls_name = getattr(my_new_model, key)
         self.assertNotEqual(cls_name, model_json["__class__"])
+
+    def test_instance_kwargs(self):
+        """Checks if user with args is instance of base_model"""
+        d = {"name": "Holberton"}
+        b = User(**d)
+        self.assertTrue(isinstance(b, BaseModel))
+
+    # def test_classattr(self):
+    #     """Check class default attributes"""
+    #     my_model = User()
+    #     attrlist = ["email", "password", "first_name", "last_name"]
+    #     mydict = my_model.__dict__
+    #     for i in attrlist:
+    #         self.assertFalse(i in mydict)
+    #         self.assertTrue(hasattr(mydict, i))
+    #         self.assertEqual(getattr(mydict, i, False), "")
+
+    def test_print(self):
+        """ Tests the __str__ method """
+        b1 = User()
+        s = "[{:s}] ({:s}) {:s}\n"
+        s = s.format(b1.__class__.__name__, b1.id, str(b1.__dict__))
+        with unittest.mock.patch('sys.stdout', new=io.StringIO()) as p:
+            print(b1)
+            st = p.getvalue()
+            self.assertEqual(st, s)
