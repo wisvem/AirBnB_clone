@@ -231,8 +231,9 @@ class Test_engine(unittest.TestCase):
         self.assertFalse(os.path.exists(filename))
         storage.reload()
 
-    def test_save_all_class_no_kwarg(self):
-        """ Save method with all_classes no kwarg"""
+    def test_reload_all_clases(self):
+        """ Test reload method for all classes """
+        fname = "file.json"
         b = BaseModel()
         u = User()
         c = City()
@@ -247,23 +248,18 @@ class Test_engine(unittest.TestCase):
         keyp = p.__class__.__name__ + '.' + p.id
         keyr = r.__class__.__name__ + '.' + r.id
         keys = s.__class__.__name__ + '.' + s.id
-        fname = "file.json"
         self.assertFalse(os.path.isfile(fname))
         storage.save()
         self.assertTrue(os.path.isfile(fname))
-        with open(fname, encoding="utf-8") as myfile:
-            pobj = json.load(myfile)
-            self.assertEqual(b.id, pobj[keyb]["id"])
-            self.assertEqual(b.__class__.__name__, pobj[keyb]["__class__"])
-            self.assertEqual(u.id, pobj[keyu]["id"])
-            self.assertEqual(u.__class__.__name__, pobj[keyu]["__class__"])
-            self.assertEqual(c.id, pobj[keyc]["id"])
-            self.assertEqual(c.__class__.__name__, pobj[keyc]["__class__"])
-            self.assertEqual(a.id, pobj[keya]["id"])
-            self.assertEqual(a.__class__.__name__, pobj[keya]["__class__"])
-            self.assertEqual(p.id, pobj[keyp]["id"])
-            self.assertEqual(p.__class__.__name__, pobj[keyp]["__class__"])
-            self.assertEqual(r.id, pobj[keyr]["id"])
-            self.assertEqual(r.__class__.__name__, pobj[keyr]["__class__"])
-            self.assertEqual(s.id, pobj[keys]["id"])
-            self.assertEqual(s.__class__.__name__, pobj[keys]["__class__"])
+        self.assertTrue(len(storage.all()) > 0)
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
+        storage.reload()
+        alldic = storage.all()
+        cl = [b, u, c, a, p, r, s]
+        cln = ['b', 'u', 'c', 'a', 'p', 'r', 's']
+        for i, j in zip(cl, cln):
+            key = "key" + j
+            self.assertFalse(i == alldic[eval(key)])
+            self.assertEqual(i.id, alldic[eval(key)].id)
+            self.assertEqual(i.__class__, alldic[eval(key)].__class__)
