@@ -56,6 +56,8 @@ class Test_Base_model(unittest.TestCase):
 
         # Checks for class attributes
         self.assertTrue(hasattr(my_state, 'name'))
+        # Cheks if class attribute is a empty string
+        self.assertEqual(getattr(my_state, 'name'), "")
 
         # Checks that some falses attributes
         my_attrs = ['name', 'create_time', 'update_time']
