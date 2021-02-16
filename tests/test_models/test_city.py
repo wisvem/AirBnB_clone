@@ -13,7 +13,7 @@ from models import storage
 
 class Test_City_class(unittest.TestCase):
     """
-    Defines a class to evaluate diferent test cases for base_model.py file
+    Defines a class to evaluate diferent test cases for city.py file
     """
     def setUp(self):
         """set environment to start testing"""
