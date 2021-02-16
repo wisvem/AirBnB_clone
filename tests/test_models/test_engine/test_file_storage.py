@@ -227,12 +227,11 @@ class Test_engine(unittest.TestCase):
 
     def test_empty_reload(self):
         """ Empty reload function """
-        my_obj = FileStorage()
+
         new_obj = BaseModel()
-        my_obj.new(new_obj)
-        my_obj.save()
-        my_dict1 = my_obj.all()
-        os.remove("test.json")
-        my_obj.reload()
-        my_dict2 = my_obj.all()
+        storage.new(new_obj)
+        storage.save()
+        my_dict1 = storage.all()
+        storage.reload()
+        my_dict2 = storage.all()
         self.assertTrue(my_dict2 == my_dict1)
