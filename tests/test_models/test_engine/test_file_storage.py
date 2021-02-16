@@ -225,8 +225,14 @@ class Test_engine(unittest.TestCase):
     #     all_objs = storage.all()
     #     self.assertEqual(mymodel, all_objs[objid])
 
-    def test_no_file(self):
+    def test_engine_013(self):
         """ Test empty file"""
         filename = "file.json"
         self.assertFalse(os.path.exists(filename))
         storage.reload()
+
+    def test_engine_014(self):
+        myvar = FileStorage()
+        self.assertIsInstance(myvar, FileStorage)
+        self.assertTrue(hasattr(myvar, '__objects'))
+        self.assertTrue(hasattr(myvar, '__file_path'))
