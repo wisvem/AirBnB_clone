@@ -231,16 +231,6 @@ class Test_engine(unittest.TestCase):
         self.assertFalse(os.path.exists(filename))
         storage.reload()
 
-    def test_engine_014(self):
-        """ no args please """
-        with self.assertRaises(TypeError) as e:
-            FileStorage.reload()
-        msg = "reload() missing 1 required positional argument: 'self'"
-        self.assertEqual(str(e.exception), msg)
-    
-    def test_engine_015(self):
-        """such args much wow"""
-        with self.assertRaises(TypeError) as e:
-            FileStorage.save(self, 98)
-        msg = "save() takes 1 positional argument but 2 were given"
-        self.assertEqual(str(e.exception), msg)
+    def test_instantiation(self):
+        """make an instance of storage class"""
+        self.assertEqual(type(storage).__name__, "FileStorage")
