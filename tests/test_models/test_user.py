@@ -7,12 +7,29 @@ from models.user import User
 import os
 import uuid
 import datetime
+from models.engine.file_storage import FileStorage
 
 
 class Test_User_model(unittest.TestCase):
     """
     Defines a class to evaluate diferent test cases for base_model.py file
     """
+
+    def setUp(self):
+        """set environment to start testing"""
+        # Empty objects in engine
+        FileStorage._FileStorage__objects = {}
+        # Remove file.json if exists
+        if os.path.exists("file.json"):
+            os.remove("file.json")
+
+    def tearDown(self):
+        """set enviroment when testing is finished"""
+        # Empty objects in engine
+        FileStorage._FileStorage__objects = {}
+        # Remove file.json if exists
+        if os.path.exists("file.json"):
+            os.remove("file.json")
 
     def test_instance_type_id_class(self):
         """
@@ -54,7 +71,7 @@ class Test_User_model(unittest.TestCase):
         """
         Checks for datetime attributes
         """
-        #Test if two instnace has diferent datetime
+        # Test if two instnace has diferent datetime
         model = User()
         model_2 = User()
         self.assertNotEqual(model.created_at, model_2.created_at)
@@ -150,7 +167,7 @@ class Test_User_model(unittest.TestCase):
                 self.assertEqual(model.__class__.__name__, value)
                 self.assertTrue(type(value) == str)
             else:
-                #checks the value for others attributes
+                # checks the value for others attributes
                 self.assertEqual(getattr(model, key), value)
                 # Checks the types and formats of the attributes
                 if key == "id":
@@ -167,7 +184,6 @@ class Test_User_model(unittest.TestCase):
                     self.assertTrue(type(value) == float)
                 elif key == "my_dict":
                     self.assertTrue(type(value) == dict)
-
 
     def test_init_User_from_dictionary(self):
         """
@@ -189,6 +205,3 @@ class Test_User_model(unittest.TestCase):
         self.assertTrue(hasattr(my_new_model, key))
         cls_name = getattr(my_new_model, key)
         self.assertNotEqual(cls_name, model_json["__class__"])
-
-
-
