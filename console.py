@@ -178,8 +178,9 @@ class HBNBCommand(cmd.Cmd):
                 setattr(myobj, mylist[2], mylist[3])
                 myobj.save()
             except ValueError as e:
-                print("Attribute {} must be a number(run <help update>)".
-                      format(mylist[2]))
+#                print("Attribute {} must be a number(run <help update>)".
+#                      format(mylist[2]))
+                pass
             found_id = True
 
     def do_count(self, arg):
