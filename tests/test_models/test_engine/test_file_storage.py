@@ -231,8 +231,39 @@ class Test_engine(unittest.TestCase):
         self.assertFalse(os.path.exists(filename))
         storage.reload()
 
-    def test_engine_014(self):
-        myvar = FileStorage()
-        self.assertIsInstance(myvar, FileStorage)
-        self.assertTrue(hasattr(myvar, '__objects'))
-        self.assertTrue(hasattr(myvar, '__file_path'))
+    def test_save_all_class_no_kwarg(self):
+        """ Save method with all_classes no kwarg"""
+        b = BaseModel()
+        u = User()
+        c = City()
+        a = Amenity()
+        p = Place()
+        r = Review()
+        s = State()
+        keyb = b.__class__.__name__ + '.' + b.id
+        keyu = u.__class__.__name__ + '.' + u.id
+        keyc = c.__class__.__name__ + '.' + c.id
+        keya = a.__class__.__name__ + '.' + a.id
+        keyp = p.__class__.__name__ + '.' + p.id
+        keyr = r.__class__.__name__ + '.' + r.id
+        keys = s.__class__.__name__ + '.' + s.id
+        fname = "file.json"
+        self.assertFalse(os.path.isfile(fname))
+        storage.save()
+        self.assertTrue(os.path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[keyb]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[keyb]["__class__"])
+            self.assertEqual(u.id, pobj[keyu]["id"])
+            self.assertEqual(u.__class__.__name__, pobj[keyu]["__class__"])
+            self.assertEqual(c.id, pobj[keyc]["id"])
+            self.assertEqual(c.__class__.__name__, pobj[keyc]["__class__"])
+            self.assertEqual(a.id, pobj[keya]["id"])
+            self.assertEqual(a.__class__.__name__, pobj[keya]["__class__"])
+            self.assertEqual(p.id, pobj[keyp]["id"])
+            self.assertEqual(p.__class__.__name__, pobj[keyp]["__class__"])
+            self.assertEqual(r.id, pobj[keyr]["id"])
+            self.assertEqual(r.__class__.__name__, pobj[keyr]["__class__"])
+            self.assertEqual(s.id, pobj[keys]["id"])
+            self.assertEqual(s.__class__.__name__, pobj[keys]["__class__"])
