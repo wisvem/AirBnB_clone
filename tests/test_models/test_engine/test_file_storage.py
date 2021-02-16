@@ -242,7 +242,7 @@ class Test_engine(unittest.TestCase):
         self.assertTrue(hasattr(FileStorage, "_FileStorage__file_path"))
         self.assertTrue(hasattr(FileStorage, "_FileStorage__objects"))
         self.assertEqual(getattr(FileStorage, "_FileStorage__objects"), {})
-        self.assertNotEqual(getattr(FileStorage, "_FileStorage__objects"), [])
+        self.assertEqual(getattr(FileStorage, "_FileStorage__objects"), [])
         self.assertEqual(FileStorage._FileStorage__file_path, "file.json")
 
     def test_engine_016(self):
