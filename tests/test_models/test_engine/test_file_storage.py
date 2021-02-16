@@ -151,7 +151,7 @@ class Test_engine(unittest.TestCase):
         """Test reload function"""
         filename = "file.json"
         mymodel = BaseModel()
-        my_obj = mymodel.__class__.__name__ +'.'+mymodel.id
+        my_obj = mymodel.__class__.__name__ + '.'+mymodel.id
         self.assertFalse(os.path.exists(filename))
         self.assertTrue(len(storage.all()) == 1)
         storage.save()
@@ -170,4 +170,35 @@ class Test_engine(unittest.TestCase):
         self.assertEqual(mymodel.updated_at, all_obj[my_obj].updated_at)
         self.assertTrue(len(storage.all()) == 1)
 
-
+    def test_reload_all_clases(self):
+        """Test reload method for all classes"""
+        filename = "file.json"
+        baseobj = BaseModel()
+        userobj = User()
+        cityobj = City()
+        ameobj = Amenity()
+        placeobj = Place()
+        reviewobj = Review()
+        stateobj = State()
+        id1 = baseobj.__class__.__name__ + '.' + baseobj.id
+        id2 = userobj.__class__.__name__ + '.' + userobj.id
+        id3 = cityobj.__class__.__name__ + '.' + cityobj.id
+        id4 = ameobj.__class__.__name__ + '.' + ameobj.id
+        id5 = placeobj.__class__.__name__ + '.' + placeobj.id
+        id6 = reviewobj.__class__.__name__ + '.' + reviewobj.id
+        id7 = stateobj.__class__.__name__ + '.' + stateobj.id
+        self.assertFalse(os.path.exists(filename))
+        storage.save()
+        self.assertTrue(os.path.exists(filename))
+        self.assertTrue(len(storage.all()) > 0)
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
+        storage.reload()
+        alldic = storage.all()
+        clist = [baseobj, userobj, cityobj,
+                 ameobj, placeobj, reviewobj, stateobj]
+        for i, j in zip(clist, range(1, 7)):
+            ids = "id" + str(j)
+            self.assertFalse(i == alldic[eval(ids)])
+            self.assertEqual(i.id, alldic[eval(ids)].id)
+            self.assertEqual(i.__class__, alldic[eval(ids)].__class__)

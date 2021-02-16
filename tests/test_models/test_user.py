@@ -1,18 +1,17 @@
 #!/usr/bin/python3
-"""Unittest for base_model.py file
+"""Unittest for state.py file
 """
 import unittest
-import unittest.mock 
 from models.base_model import BaseModel
 from models.user import User
 import os
 import uuid
 import datetime
 from models.engine.file_storage import FileStorage
-import io
+from models import storage
 
 
-class Test_User_model(unittest.TestCase):
+class Test_User_class(unittest.TestCase):
     """
     Defines a class to evaluate diferent test cases for base_model.py file
     """
@@ -20,7 +19,7 @@ class Test_User_model(unittest.TestCase):
     def setUp(self):
         """set environment to start testing"""
         # Empty objects in engine
-        from models.engine.file_storage import FileStorage
+        FileStorage._FileStorage__objects = {}
         # Remove file.json if exists
         if os.path.exists("file.json"):
             os.remove("file.json")
@@ -37,61 +36,72 @@ class Test_User_model(unittest.TestCase):
         """
         Checks for a instance of the class
         """
-        model = User()
-        self.assertIsInstance(model, User)
-        self.assertIsInstance(model, BaseModel)
-        self.assertFalse(type(model) == type(User))
-        self.assertFalse(id(model) == id(User))
-        model_2 = User()
-        self.assertTrue(type(model) == type(model_2))
-        self.assertFalse(id(model) == id(model_2))
+        my_user = User()
+        self.assertIsInstance(my_user, User)
+        self.assertIsInstance(my_user, BaseModel)
+        self.assertFalse(type(my_user) == type(User))
+        self.assertFalse(id(my_user) == id(User))
+        my_user_2 = User()
+        self.assertTrue(type(my_user) == type(my_user_2))
+        self.assertFalse(id(my_user) == id(my_user_2))
 
     def test_instances_attributes(self):
         """
         Checks attributes created to the new object
         """
         # Checks that base attributes are created for the object
-        model = User()
+        my_user = User()
         my_attrs = ['id', 'created_at', 'updated_at']
         for attr in my_attrs:
-            self.assertEqual(attr in model.__dict__.keys(), True)
+            self.assertEqual(attr in my_user.__dict__.keys(), True)
+
+        # Checks for class attributes
+        self.assertTrue(hasattr(my_user, 'email'))
+        self.assertTrue(hasattr(my_user, 'password'))
+        self.assertTrue(hasattr(my_user, 'last_name'))
+        self.assertTrue(hasattr(my_user, 'first_name'))
+        # Cheks if class attribute are empty strings
+        self.assertEqual(getattr(my_user, 'email'), "")
+        self.assertEqual(getattr(my_user, 'password'), "")
+        self.assertEqual(getattr(my_user, 'last_name'), "")
+        self.assertEqual(getattr(my_user, 'first_name'), "")
 
         # Checks that some falses attributes
         my_attrs = ['name', 'create_time', 'update_time']
         for attr in my_attrs:
-            self.assertEqual(attr in model.__dict__.keys(), False)
+            self.assertEqual(attr in my_user.__dict__.keys(), False)
 
     def test_unique_id(self):
         """
         Checks for a unique id
         """
         # Checks if two instances has diferents id
-        model = User()
-        model_2 = User()
-        self.assertNotEqual(model.id, model_2.id)
+        my_user = User()
+        my_user_2 = User()
+        self.assertNotEqual(my_user.id, my_user_2.id)
 
     def test_datetime(self):
         """
         Checks for datetime attributes
         """
         # Test if two instnace has diferent datetime
-        model = User()
-        model_2 = User()
-        self.assertNotEqual(model.created_at, model_2.created_at)
-        self.assertNotEqual(model.updated_at, model_2.updated_at)
+        my_user = User()
+        my_user_2 = User()
+        self.assertNotEqual(my_user.created_at, my_user_2.created_at)
+        self.assertNotEqual(my_user.updated_at, my_user_2.updated_at)
 
         # Test if attribute created_at and updated_at are datetime instance
-        model = User()
-        self.assertIsInstance(model.created_at, datetime.datetime)
-        self.assertIsInstance(model.updated_at, datetime.datetime)
+        my_user = User()
+        self.assertIsInstance(my_user.created_at, datetime.datetime)
+        self.assertIsInstance(my_user.updated_at, datetime.datetime)
 
     def test_UUID4(self):
         """
         Checks for the ID generation protocol
         """
         # Checks that the ID generated is the version 4
-        model = User()
-        version = uuid.UUID(model.id).version
+        my_user = User()
+        version = uuid.UUID(my_user.id).version
         self.assertEqual(version, 4)
 
     def test_created_and_updated_at(self):
@@ -100,19 +110,19 @@ class Test_User_model(unittest.TestCase):
         added to the object and created_at is the same all the time.
         """
         # Checks that updated_at changes
-        model = User()
-        updated_1 = str(model.updated_at)
-        model.name = "Betty"
-        model.save()
-        updated_2 = str(model.updated_at)
+        my_user = User()
+        updated_1 = str(my_user.updated_at)
+        my_user.name = "New York"
+        my_user.save()
+        updated_2 = str(my_user.updated_at)
         self.assertNotEqual(updated_1, updated_2)
 
         # Checks that created_at doesn't change
-        model = User()
-        created_1 = str(model.created_at)
-        model.last_name = "Holberton"
-        model.save()
-        created_2 = str(model.created_at)
+        my_user = User()
+        created_1 = str(my_user.created_at)
+        my_user.name = "Chicago"
+        my_user.save()
+        created_2 = str(my_user.created_at)
         self.assertEqual(created_1, created_2)
 
     def test_add_new_attributes(self):
@@ -120,61 +130,59 @@ class Test_User_model(unittest.TestCase):
         Checks that can add new attributes to the objects
         """
         # Checks new attributes are added
-        dict_attr = {'first_name': 'Betty',
-                     'last_name': 'Holberton', 'age': 40,
-                     'email': 'wisvem@hotmail.com', 'password': "980336"}
-        model = User()
+        dict_attr = {'name': 'Betty', 'last': 'Holberton', 'age': 40}
+        my_user = User()
         for key, value in dict_attr.items():
-            setattr(model, key, value)
+            setattr(my_user, key, value)
         for key, value in dict_attr.items():
-            self.assertTrue(hasattr(model, key))
-            self.assertEqual(getattr(model, key), value)
+            self.assertTrue(hasattr(my_user, key))
+            self.assertEqual(getattr(my_user, key), value)
 
         # Checks for all attributes for the object
-        my_attrs = ['id', 'created_at', 'updated_at', 'email', 'password',
-                    'first_name', 'last_name', 'age']
+        my_attrs = ['id', 'created_at', 'updated_at', 'name', 'last', 'age']
         for attr in my_attrs:
-            self.assertEqual(attr in model.__dict__.keys(), True)
+            self.assertEqual(attr in my_user.__dict__.keys(), True)
 
     def test_str_method(self):
         """
         Checks str method
         """
-        model = User()
-        string = "[{}] ({}) {}".format(model.__class__.__name__, model.id,
-                                       model.__dict__)
-        self.assertEqual(str(model), string)
+        my_user = User()
+        string = "[{}] ({}) {}".format(my_user.__class__.__name__, my_user.id,
+                                       my_user.__dict__)
+        self.assertEqual(str(my_user), string)
 
     def test_to_dict_method(self):
         """
         Checks dict method
         """
         # Checks if it convert to a dict type
-        model = User()
-        model.name = "Holberton"
-        model.my_number = 89
-        model.my_float = 100.54
-        model.my_list = ["Hello", "world", 100]
-        model.my_dict = {'name': 'Betty', 'last_name': 'Holberton', 'age': 85}
-        model.save()
-        model_json = model.to_dict()
+        my_user = User()
+        my_user.name = "Holberton"
+        my_user.my_number = 89
+        my_user.my_float = 100.54
+        my_user.my_list = ["Hello", "world", 100]
+        my_user.my_dict = {'name': 'Betty',
+                           'last_name': 'Holberton', 'age': 85}
+        my_user.save()
+        my_user_json = my_user.to_dict()
         # checks if the method really convert to a dict type all the attributes
-        self.assertEqual(type(model_json), dict)
-        for key, value in model_json.items():
+        self.assertEqual(type(my_user_json), dict)
+        for key, value in my_user_json.items():
             # checks if the dict has the same attributes keys that the object
-            self.assertTrue(hasattr(model, key))
+            self.assertTrue(hasattr(my_user, key))
             # checks if datetime was safe as a iso format and its type
             if key == "created_at" or key == "updated_at":
-                _datetime = getattr(model, key).isoformat()
+                _datetime = getattr(my_user, key).isoformat()
                 self.assertEqual(_datetime, value)
                 self.assertTrue(type(value) == str)
             # checks the class name attribute and its type
             elif key == "__class__":
-                self.assertEqual(model.__class__.__name__, value)
+                self.assertEqual(my_user.__class__.__name__, value)
                 self.assertTrue(type(value) == str)
             else:
                 # checks the value for others attributes
-                self.assertEqual(getattr(model, key), value)
+                self.assertEqual(getattr(my_user, key), value)
                 # Checks the types and formats of the attributes
                 if key == "id":
                     version = uuid.UUID(value).version
@@ -191,49 +199,23 @@ class Test_User_model(unittest.TestCase):
                 elif key == "my_dict":
                     self.assertTrue(type(value) == dict)
 
-    def test_init_User_from_dictionary(self):
+    def test_init_state_from_dictionary(self):
         """
         Checks when it is passed a dictionary to the init method.
         """
-        model = User()
-        model.name = "Holberton"
-        model.my_number = 89
-        model_json = model.to_dict()
-        my_new_model = User(**model_json)
-        # Checks that the object has the same attributes that the model
-        dict_attr = {'name': 'Holberton', 'my_number': 89, 'id': model.id,
-                     'created_at': model.created_at,
-                     'updated_at': model.updated_at}
+        my_user = User()
+        my_user.name = "Holberton"
+        my_user.my_number = 89
+        my_user_json = my_user.to_dict()
+        my_new_my_user = User(**my_user_json)
+        # Checks that the object has the same attributes that the my_user
+        dict_attr = {'name': 'Holberton', 'my_number': 89, 'id': my_user.id,
+                     'created_at': my_user.created_at,
+                     'updated_at': my_user.updated_at}
         for key, value in dict_attr.items():
-            self.assertTrue(hasattr(my_new_model, key))
-            self.assertEqual(getattr(my_new_model, key), value)
+            self.assertTrue(hasattr(my_new_my_user, key))
+            self.assertEqual(getattr(my_new_my_user, key), value)
         # Checks if __class__ attribute was not added
-        self.assertTrue(hasattr(my_new_model, key))
-        cls_name = getattr(my_new_model, key)
-        self.assertNotEqual(cls_name, model_json["__class__"])
-
-    def test_instance_kwargs(self):
-        """Checks if user with args is instance of base_model"""
-        d = {"name": "Holberton"}
-        b = User(**d)
-        self.assertTrue(isinstance(b, BaseModel))
-
-    # def test_classattr(self):
-    #     """Check class default attributes"""
-    #     my_model = User()
-    #     attrlist = ["email", "password", "first_name", "last_name"]
-    #     mydict = my_model.__dict__
-    #     for i in attrlist:
-    #         self.assertFalse(i in mydict)
-    #         self.assertTrue(hasattr(mydict, i))
-    #         self.assertEqual(getattr(mydict, i, False), "")
-
-    def test_print(self):
-        """ Tests the __str__ method """
-        b1 = User()
-        s = "[{:s}] ({:s}) {:s}\n"
-        s = s.format(b1.__class__.__name__, b1.id, str(b1.__dict__))
-        with unittest.mock.patch('sys.stdout', new=io.StringIO()) as p:
-            print(b1)
-            st = p.getvalue()
-            self.assertEqual(st, s)
+        self.assertTrue(hasattr(my_new_my_user, key))
+        cls_name = getattr(my_new_my_user, key)
+        self.assertNotEqual(cls_name, my_user_json["__class__"])
