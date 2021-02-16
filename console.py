@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-"""
-Command processor module
+"""Console Command processor module to control Airbnb Console
 """
 import cmd
 import json
@@ -17,8 +16,7 @@ from collections import Counter
 
 
 class HBNBCommand(cmd.Cmd):
-    """
-    Command processor class
+    """Console Command processor class to control Airbnb Console
     """
 
     prompt = '(hbnb) '
