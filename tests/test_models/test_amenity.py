@@ -11,9 +11,9 @@ from models.engine.file_storage import FileStorage
 from models import storage
 
 
-class Test_Base_model(unittest.TestCase):
+class Test_Amenity_class(unittest.TestCase):
     """
-    Defines a class to evaluate diferent test cases for base_model.py file
+    Defines a class to evaluate diferent test cases for amenity.py file
     """
     def setUp(self):
         """set environment to start testing"""
@@ -211,41 +211,3 @@ class Test_Base_model(unittest.TestCase):
         self.assertTrue(hasattr(my_new_my_amenity, key))
         cls_name = getattr(my_new_my_amenity, key)
         self.assertNotEqual(cls_name, my_amenity_json["__class__"])
-
-    def test_storage_state_class_in_object_dict(self):
-        """
-        Checks that state class is saved in the object dict and
-        """
-        my_amenity = Amenity()
-        all_objs = storage.all()
-        objid = None
-        for objid in all_objs:
-            pass
-        mystr = my_amenity.__class__.__name__+'.'+my_amenity.id
-        self.assertEqual(objid, mystr)
-        # test full object
-        objid = {mystr: my_amenity}
-        self.assertEqual(all_objs, objid)
-
-    def test_reload_function_for_state_class(self):
-        """Test reload function for state"""
-        filename = "file.json"
-        my_amenity = Amenity()
-        my_obj = my_amenity.__class__.__name__ +'.'+my_amenity.id
-        self.assertFalse(os.path.exists(filename))
-        self.assertTrue(len(storage.all()) == 1)
-        storage.save()
-        self.assertTrue(os.path.exists(filename))
-        self.assertTrue(len(storage.all()) == 1)
-        # Empty the __objects to check if reload works
-        FileStorage._FileStorage__objects = {}
-        self.assertEqual(storage.all(), {})
-        self.assertTrue(len(storage.all()) == 0)
-        storage.reload()
-        all_obj = storage.all()
-        self.assertFalse(my_amenity == all_obj[my_obj])
-        self.assertEqual(my_amenity.id, all_obj[my_obj].id)
-        self.assertEqual(my_amenity.__class__, all_obj[my_obj].__class__)
-        self.assertEqual(my_amenity.created_at, all_obj[my_obj].created_at)
-        self.assertEqual(my_amenity.updated_at, all_obj[my_obj].updated_at)
-        self.assertTrue(len(storage.all()) == 1)
