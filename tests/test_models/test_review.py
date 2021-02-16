@@ -13,7 +13,7 @@ from models import storage
 
 class Test_Review_class(unittest.TestCase):
     """
-    Defines a class to evaluate diferent test cases for base_model.py file
+    Defines a class to evaluate diferent test cases for review.py file
     """
     def setUp(self):
         """set environment to start testing"""
@@ -215,41 +215,3 @@ class Test_Review_class(unittest.TestCase):
         self.assertTrue(hasattr(my_new_my_review, key))
         cls_name = getattr(my_new_my_review, key)
         self.assertNotEqual(cls_name, my_review_json["__class__"])
-
-    # def test_storage_state_class_in_object_dict(self):
-    #     """
-    #     Checks that state class is saved in the object dict and
-    #     """
-    #     my_review = Review()
-    #     all_objs = storage.all()
-    #     objid = None
-    #     for objid in all_objs:
-    #         pass
-    #     mystr = my_review.__class__.__name__+'.'+my_review.id
-    #     self.assertEqual(objid, mystr)
-    #     # test full object
-    #     objid = {mystr: my_review}
-    #     self.assertEqual(all_objs, objid)
-
-    # def test_reload_function_for_state_class(self):
-    #     """Test reload function for state"""
-    #     filename = "file.json"
-    #     my_review = Review()
-    #     my_obj = my_review.__class__.__name__ +'.'+my_review.id
-    #     self.assertFalse(os.path.exists(filename))
-    #     self.assertTrue(len(storage.all()) == 1)
-    #     storage.save()
-    #     self.assertTrue(os.path.exists(filename))
-    #     self.assertTrue(len(storage.all()) == 1)
-    #     # Empty the __objects to check if reload works
-    #     FileStorage._FileStorage__objects = {}
-    #     self.assertEqual(storage.all(), {})
-    #     self.assertTrue(len(storage.all()) == 0)
-    #     storage.reload()
-    #     all_obj = storage.all()
-    #     self.assertFalse(my_review == all_obj[my_obj])
-    #     self.assertEqual(my_review.id, all_obj[my_obj].id)
-    #     self.assertEqual(my_review.__class__, all_obj[my_obj].__class__)
-    #     self.assertEqual(my_review.created_at, all_obj[my_obj].created_at)
-    #     self.assertEqual(my_review.updated_at, all_obj[my_obj].updated_at)
-    #     self.assertTrue(len(storage.all()) == 1)
