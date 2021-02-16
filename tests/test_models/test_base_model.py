@@ -6,12 +6,28 @@ from models.base_model import BaseModel
 import os
 import uuid
 import datetime
+from models.engine.file_storage import FileStorage
 
 
 class Test_Base_model(unittest.TestCase):
     """
     Defines a class to evaluate diferent test cases for base_model.py file
     """
+    def setUp(self):
+        """set environment to start testing"""
+        # Empty objects in engine
+        FileStorage._FileStorage__objects = {}
+        # Remove file.json if exists
+        if os.path.exists("file.json"):
+            os.remove("file.json")
+
+    def tearDown(self):
+        """set enviroment when testing is finished"""
+        # Empty objects in engine
+        FileStorage._FileStorage__objects = {}
+        # Remove file.json if exists
+        if os.path.exists("file.json"):
+            os.remove("file.json")
 
     def test_instance_type_id_class(self):
         """
