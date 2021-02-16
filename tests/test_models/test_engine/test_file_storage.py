@@ -240,19 +240,5 @@ class Test_engine(unittest.TestCase):
         self.assertTrue(hasattr(FileStorage, "_FileStorage__file_path"))
         self.assertTrue(hasattr(FileStorage, "_FileStorage__objects"))
         self.assertEqual(getattr(FileStorage, "_FileStorage__objects"), {})
+        self.assertNotEqual(getattr(FileStorage, "_FileStorage__objects"), [])
         self.assertEqual(FileStorage._FileStorage__file_path, "file.json")
-
-    def tool_engine_016(self, classname):
-        """helper func for save tests"""
-        mycls = storage.classes()[classname]
-        obj = mycls()
-        storage.new(obj)
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        storage.save()
-        self.assertTrue(os.path.isfile(FileStorage._FileStorage__file_path))
-        mydic = {key: obj.to_dict()}
-        with open(FileStorage._FileStorage__file_path,
-                  "r", encoding="utf-8") as f:
-            self.assertEqual(len(f.read()), len(json.dumps(mydic)))
-            f.seek(0)
-            self.assertEqual(json.load(f), mydic)
