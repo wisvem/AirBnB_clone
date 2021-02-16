@@ -170,11 +170,11 @@ class HBNBCommand(cmd.Cmd):
         elif len(mylist) < 4:
             print("** value missing **")
         else:
-            #            try:
-            if mylist[2] in self.ilist:
-                mylist[3] = int(mylist[3])
-            elif mylist[2] in self.flist:
-                mylist[3] = float(mylist[3])
+            # #            try:
+            # if mylist[2] in self.ilist:
+            #     mylist[3] = int(mylist[3])
+            # elif mylist[2] in self.flist:
+            #     mylist[3] = float(mylist[3])
             setattr(myobj, mylist[2], mylist[3])
             myobj.save()
 #            except ValueError as e:
