@@ -40,6 +40,8 @@ class Test_engine(unittest.TestCase):
         """Test if all_obs is empty"""
         all_objs = storage.all()
         self.assertEqual(all_objs, {})
+        storage.reload()
+        self.assertEqual(FileStorage._FileStorage__objects, {})
 
     def test_engine_001(self):
         """Test BaseModel object"""
@@ -242,3 +244,8 @@ class Test_engine(unittest.TestCase):
         self.assertEqual(getattr(FileStorage, "_FileStorage__objects"), {})
         self.assertNotEqual(getattr(FileStorage, "_FileStorage__objects"), [])
         self.assertEqual(FileStorage._FileStorage__file_path, "file.json")
+
+    def test_engine_016(self):
+        """Test if all_obs is empty"""
+        FileStorage._FileStorage__objects = []
+        self.assertEqual(FileStorage._FileStorage__objects, [])
