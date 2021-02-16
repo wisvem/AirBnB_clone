@@ -206,9 +206,9 @@ class Test_engine(unittest.TestCase):
     def test_engine_011(self):
         """Test storage new"""
         mymodel = BaseModel()
-        key = mymodel.__class__.__name__ +'.'+mymodel.id
+        objid = mymodel.__class__.__name__ +'.'+mymodel.id
+#        self.assertEqual(allobjs, {})
         allobjs = storage.all()
-        self.assertEqual(allobjs, {})
         storage.new(mymodel)
         allobjs = storage.all()
-        self.assertEqual(mymodel, allobjs[key])
+        self.assertEqual(mymodel, allobjs[objid])
