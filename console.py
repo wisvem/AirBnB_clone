@@ -31,27 +31,23 @@ class HBNBCommand(cmd.Cmd):
     all_objs = storage.all()
 
     def do_EOF(self, arg):
-        """
-        EOF method to exit cmd program
+        """EOF method to exit cmd program
         """
         print()
         return True
 
     def do_quit(self, arg):
-        """
-        Quit method to exit form cmd program (Usage: quit)
+        """Quit method to exit form cmd program (Usage: quit)
         """
         return True
 
     def emptyline(self):
-        """
-        Method to should not execute anything
+        """Method to should not execute anything
         """
         pass
 
     def do_create(self, arg):
-        """
-        Method to create a instance BaseModel and save it in JSON file
+        """Method to create a instance BaseModel and save it in JSON file
         [Usage: create <class name>]
         """
         if bool(arg) is False:
@@ -64,8 +60,7 @@ class HBNBCommand(cmd.Cmd):
             print("{}".format(my_model.id))
 
     def do_show(self, arg):
-        """
-        Prints string representation of an instance by class name and id
+        """Prints string representation of an instance by class name and id
         [Usage: show <class name> <id>]
         or
         [Usage: <class name>.show(<id>)]
@@ -90,8 +85,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
 
     def do_destroy(self, arg):
-        """
-        Deletes an instance based on the class name and id
+        """Deletes an instance based on the class name and id
         [Usage: destroy <class name> <id>]
         or
         [Usage: <class name>.destroy(<id>)]
@@ -117,8 +111,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
 
     def do_all(self, arg):
-        """
-        Prints all string repr of all instances based or not on class name
+        """Prints all string repr of all instances based or not on class name
         [Usage: all <class name>]
         or
         [Usage: all]
@@ -147,8 +140,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
 
     def do_update(self, arg):
-        """
-        Updates an obj based on the class name and id by adding or updating
+        """Updates an obj based on the class name and id by adding or updating
         [Usage: update <class name> <id> <attribute name> "<attribute value>]
         or
         [Usage: <class name>.update(<id>, <attribute name>, <attribute value>)]
@@ -188,13 +180,12 @@ class HBNBCommand(cmd.Cmd):
                 setattr(myobj, mylist[2], mylist[3])
                 myobj.save()
             except ValueError as e:
-                    print("Attribute {} must be a number(run <help update>)".
-                          format(mylist[2]))
+                print("Attribute {} must be a number(run <help update>)".
+                      format(mylist[2]))
             found_id = True
 
     def do_count(self, arg):
-        """
-        Count objects created by class
+        """Count objects created by class
         [Usage: <class name>.count()]
         """
         counter = 0
@@ -207,8 +198,7 @@ class HBNBCommand(cmd.Cmd):
             print(counter)
 
     def precmd(self, line):
-        """
-        Method to run same commands as class.method
+        """Method to run same commands as class.method
         """
         # Make a copy of line
         cp = line[:]
@@ -230,18 +220,9 @@ class HBNBCommand(cmd.Cmd):
             # Save "class" name as str
             mycls = cp2[0]
 
-# update("mode", "123-123-123", "name", "juancho")
-# update("38f22813-2753-4d42-b37c-57a17f18",{'first_name':"John","age": 89})
-# print("Fase 1 ", mylist[1])
-
             cp2[1] = cp2[1].replace('(', ', ')
-# update, "model", "123-123-123", "name", "juancho")
-# update, "38f22813-2753-4d42-b37c-57a178", {'first_name': "John", "age": 89})
-# print("Fase 2 ", mylist[1])
 
             cp2[1] = cp2[1].replace(')', '')
-# update, "model", "123-123-123", "name", "juancho"
-# update, "38f22813-2753-4d42-b37c-57a17f8", {'first_name': "John", "age": 89}
 
             # Save "command" as str
             mycmd = cp2[1].split(', ', 1)[0]
@@ -249,7 +230,6 @@ class HBNBCommand(cmd.Cmd):
             endp_p = len(cp2[1])-1
             if mycmd == "update":
                 myargs = cp2[1].split(', ', 1)[1]
-    # "38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89}
                 if count1 == 1 and count2 == 1 and '}' == cp2[1][endp_p]:
 
                     myargs = myargs.split(', ', 1)
