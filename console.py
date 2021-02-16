@@ -170,18 +170,18 @@ class HBNBCommand(cmd.Cmd):
         elif len(mylist) < 4:
             print("** value missing **")
         else:
-            try:
-                if mylist[2] in self.ilist:
-                    mylist[3] = int(mylist[3])
-                elif mylist[2] in self.flist:
-                    mylist[3] = float(mylist[3])
-                setattr(myobj, mylist[2], mylist[3])
-                myobj.save()
-            except ValueError as e:
+            #            try:
+            if mylist[2] in self.ilist:
+                mylist[3] = int(mylist[3])
+            elif mylist[2] in self.flist:
+                mylist[3] = float(mylist[3])
+            setattr(myobj, mylist[2], mylist[3])
+            myobj.save()
+#            except ValueError as e:
 #                print("Attribute {} must be a number(run <help update>)".
 #                      format(mylist[2]))
-                pass
-            found_id = True
+#                pass
+#            found_id = True
 
     def do_count(self, arg):
         """Count objects created by class
@@ -247,10 +247,10 @@ class HBNBCommand(cmd.Cmd):
 
 
 if __name__ == '__main__':
-#    import sys
-#    if len(sys.argv) > 1:
-        # Uses non interactive
-#        HBNBCommand().onecmd(' '.join(sys.argv[1:]))
-#    else:
-        # Uses interactive mode
+    #    import sys
+    #    if len(sys.argv) > 1:
+    # Uses non interactive
+    #        HBNBCommand().onecmd(' '.join(sys.argv[1:]))
+    #    else:
+    # Uses interactive mode
     HBNBCommand(stdin=input).cmdloop()
