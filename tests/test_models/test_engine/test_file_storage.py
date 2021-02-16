@@ -207,8 +207,20 @@ class Test_engine(unittest.TestCase):
         """Test storage new"""
         mymodel = BaseModel()
         objid = mymodel.__class__.__name__ +'.'+mymodel.id
-#        self.assertEqual(allobjs, {})
+#       self.assertEqual(allobjs, {})
         allobjs = storage.all()
         storage.new(mymodel)
         allobjs = storage.all()
         self.assertEqual(mymodel, allobjs[objid])
+
+    def test_engine_012(self):
+        """Test creation with a dict"""
+        userdic = {'id': "Wiston"}
+        mymodel = User(**userdic)
+        objid = mymodel.__class__.__name__ +'.'+mymodel.id
+        all_objs = storage.all()
+        self.assertIsInstance(all_objs, dict)
+        self.assertEqual(all_objs, {})
+        storage.new(mymodel)
+        all_objs = storage.all()
+        self.assertEqual(mymodel, all_objs[objid])
