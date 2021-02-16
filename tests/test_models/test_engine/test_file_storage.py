@@ -131,23 +131,3 @@ class Test_engine(unittest.TestCase):
         # test full object
         objid = {mystr: my_model}
         self.assertEqual(all_objs, objid)
-
-    def test_engine_009(self):
-        "Empty test"
-        pass
-
-    def test_engine_010(self):
-        "empty test"
-        pass
-
-    def test_engine_011(self):
-        "empty test"
-        pass
-
-    def test_engine_012(self):
-        "empty test"
-        pass
-
-    def test_engine_013(self):
-        "empty test"
-        pass
