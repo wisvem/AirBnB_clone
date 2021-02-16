@@ -213,59 +213,14 @@ class Test_engine(unittest.TestCase):
         allobjs = storage.all()
         self.assertEqual(mymodel, allobjs[objid])
 
-    # def test_engine_012(self):
-    #     """Test creation with a dict"""
-    #     userdic = {'id': "Wiston"}
-    #     mymodel = User(**userdic)
-    #     objid = mymodel.__class__.__name__ + '.'+mymodel.id
-    #     all_objs = storage.all()
-    #     self.assertIsInstance(all_objs, dict)
-    #     self.assertEqual(all_objs, {})
-    #     storage.new(mymodel)
-    #     all_objs = storage.all()
-    #     self.assertEqual(mymodel, all_objs[objid])
-
-    def test_all(self):
-        """ Test method all from filestorage """
-        my_obj = FileStorage()
-        my_dict = my_obj.all()
-        self.assertTrue(type(my_dict) == dict)
-
-    def test_new(self):
-        """ Tests method new for filestorage """
-        my_obj = FileStorage()
-        new_obj = BaseModel()
-        my_obj.new(new_obj)
-        my_dict = my_obj.all()
-        key = "{}.{}".format(type(new_obj).__name__, new_obj.id)
-        self.assertTrue(key in my_dict)
-
-    def test_empty_reload(self):
-        """ Empty reload function """
-        my_obj = FileStorage()
-        new_obj = BaseModel()
-        my_obj.new(new_obj)
-        my_obj.save()
-        my_dict1 = my_obj.all()
-        my_obj.reload()
-        my_dict2 = my_obj.all()
-        self.assertTrue(my_dict2 == my_dict1)
-
-    def test_save(self):
-        """ Tests the save method for filestorage """
-        my_obj = FileStorage()
-        new_obj = BaseModel()
-        my_obj.new(new_obj)
-        my_dict1 = my_obj.all()
-        my_obj.save()
-        my_obj.reload()
-        my_dict2 = my_obj.all()
-        for key in my_dict1:
-            key1 = key
-        for key in my_dict2:
-            key2 = key
-        self.assertEqual(my_dict1[key1].to_dict(), my_dict2[key2].to_dict())
-
-    def test_instance(self):
-        """ Check storage """
-        self.assertIsInstance(storage, FileStorage)
+    def test_engine_012(self):
+        """Test creation with a dict"""
+        userdic = {'id': "Wiston"}
+        mymodel = User(**userdic)
+        objid = mymodel.__class__.__name__ + '.'+mymodel.id
+        all_objs = storage.all()
+        self.assertIsInstance(all_objs, dict)
+        self.assertEqual(all_objs, {})
+        storage.new(mymodel)
+        all_objs = storage.all()
+        self.assertEqual(mymodel, all_objs[objid])
