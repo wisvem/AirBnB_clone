@@ -1,235 +1,644 @@
 #!/usr/bin/python3
-"""engine unittest
+""" Unittest for FileStorage class
 """
-import unittest
-import os
+
+from datetime import datetime
+import io
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.place import Place
-from models.city import City
-from models.amenity import Amenity
-from models.review import Review
-from models.state import State
 from models import storage
 from models.engine.file_storage import FileStorage
+from models.base_model import BaseModel
+from models.user import User
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+from models.state import State
+
+from os import path, remove
+import unittest
 
 
-class Test_engine(unittest.TestCase):
-    """Engine test class
-    """
-    clis = ['BaseModel', 'User', 'Place', 'City', 'Amenity', 'Review', 'State']
+class Test_all(unittest.TestCase):
+    """ Test for the all method """
 
     def setUp(self):
-        """set environment to start testing"""
-        # Empty objects in engine
+        """ Set up for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
         FileStorage._FileStorage__objects = {}
-        # Remove file.json if exists
-        if os.path.exists("file.json"):
-            os.remove("file.json")
 
     def tearDown(self):
-        """set enviroment when testing is finished"""
-        # Empty objects in engine
-        FileStorage._FileStorage__objects = {}
-        # Remove file.json if exists
-        if os.path.exists("file.json"):
-            os.remove("file.json")
-
-    def test_engine_000(self):
-        """Test if all_obs is empty"""
-        all_objs = storage.all()
-        self.assertEqual(all_objs, {})
-
-    def test_engine_001(self):
-        """Test BaseModel object"""
-        my_model = BaseModel()
-        all_objs = storage.all()
-        objid = None
-        for objid in all_objs:
+        """ Tear down for all methods """
+        try:
+            remove("file.json")
+        except:
             pass
-        mystr = my_model.__class__.__name__+'.'+my_model.id
-        self.assertEqual(objid, mystr)
-        # test full object
-        objid = {mystr: my_model}
-        self.assertEqual(all_objs, objid)
 
-    def test_engine_002(self):
-        """Test User object"""
-        my_model = User()
-        all_objs = storage.all()
-        objid = None
-        for objid in all_objs:
-            pass
-        mystr = my_model.__class__.__name__+'.'+my_model.id
-        self.assertEqual(objid, mystr)
-        # test full object
-        objid = {mystr: my_model}
-        self.assertEqual(all_objs, objid)
-
-    def test_engine_003(self):
-        """Test Place object"""
-        my_model = Place()
-        all_objs = storage.all()
-        objid = None
-        for objid in all_objs:
-            pass
-        mystr = my_model.__class__.__name__+'.'+my_model.id
-        self.assertEqual(objid, mystr)
-        # test full object
-        objid = {mystr: my_model}
-        self.assertEqual(all_objs, objid)
-
-    def test_engine_004(self):
-        """Test City object"""
-        my_model = City()
-        all_objs = storage.all()
-        objid = None
-        for objid in all_objs:
-            pass
-        mystr = my_model.__class__.__name__+'.'+my_model.id
-        self.assertEqual(objid, mystr)
-        # test full object
-        objid = {mystr: my_model}
-        self.assertEqual(all_objs, objid)
-
-    def test_engine_005(self):
-        """Test Amenity object"""
-        my_model = Amenity()
-        all_objs = storage.all()
-        objid = None
-        for objid in all_objs:
-            pass
-        mystr = my_model.__class__.__name__+'.'+my_model.id
-        self.assertEqual(objid, mystr)
-        # test full object
-        objid = {mystr: my_model}
-        self.assertEqual(all_objs, objid)
-
-    def test_engine_006(self):
-        """Test Review object"""
-        my_model = Review()
-        all_objs = storage.all()
-        objid = None
-        for objid in all_objs:
-            pass
-        mystr = my_model.__class__.__name__+'.'+my_model.id
-        self.assertEqual(objid, mystr)
-        # test full object
-        objid = {mystr: my_model}
-        self.assertEqual(all_objs, objid)
-
-    def test_engine_007(self):
-        """Test State object"""
-        my_model = State()
-        all_objs = storage.all()
-        objid = None
-        for objid in all_objs:
-            pass
-        mystr = my_model.__class__.__name__+'.'+my_model.id
-        self.assertEqual(objid, mystr)
-        # test full object
-        objid = {mystr: my_model}
-        self.assertEqual(all_objs, objid)
-
-    def test_engine_008(self):
-        """ Save method with base model """
-        filename = "file.json"
-        mymodel = BaseModel()
-        key = mymodel.__class__.__name__+'.'+mymodel.id
-        self.assertFalse(os.path.exists(filename))
-        storage.new(mymodel)
-        storage.save()
-        self.assertTrue(os.path.exists(filename))
-        with open(filename) as f:
-            myobj = json.load(f)
-            self.assertEqual(mymodel.id, myobj[key]["id"])
-            self.assertEqual(mymodel.__class__.__name__,
-                             myobj[key]["__class__"])
-
-    def test_engine_009(self):
-        """Test reload function"""
-        filename = "file.json"
-        mymodel = BaseModel()
-        my_obj = mymodel.__class__.__name__ + '.'+mymodel.id
-        self.assertFalse(os.path.exists(filename))
-        self.assertTrue(len(storage.all()) == 1)
-        storage.save()
-        self.assertTrue(os.path.exists(filename))
-        self.assertTrue(len(storage.all()) == 1)
-        # Empty the __objects to check if reload works
-        FileStorage._FileStorage__objects = {}
+    def test_all_empty(self):
+        """ Test Empty Dictionary """
         self.assertEqual(storage.all(), {})
-        self.assertTrue(len(storage.all()) == 0)
-        storage.reload()
-        all_obj = storage.all()
-        self.assertFalse(mymodel == all_obj[my_obj])
-        self.assertEqual(mymodel.id, all_obj[my_obj].id)
-        self.assertEqual(mymodel.__class__, all_obj[my_obj].__class__)
-        self.assertEqual(mymodel.created_at, all_obj[my_obj].created_at)
-        self.assertEqual(mymodel.updated_at, all_obj[my_obj].updated_at)
-        self.assertTrue(len(storage.all()) == 1)
 
-    def test_engine_010(self):
-        """Test reload whit all classes"""
-        filename = "file.json"
-        baseobj = BaseModel()
-        userobj = User()
-        cityobj = City()
-        ameobj = Amenity()
-        placeobj = Place()
-        reviewobj = Review()
-        stateobj = State()
-        id1 = baseobj.__class__.__name__ + '.' + baseobj.id
-        id2 = userobj.__class__.__name__ + '.' + userobj.id
-        id3 = cityobj.__class__.__name__ + '.' + cityobj.id
-        id4 = ameobj.__class__.__name__ + '.' + ameobj.id
-        id5 = placeobj.__class__.__name__ + '.' + placeobj.id
-        id6 = reviewobj.__class__.__name__ + '.' + reviewobj.id
-        id7 = stateobj.__class__.__name__ + '.' + stateobj.id
-        self.assertFalse(os.path.exists(filename))
+    def test_basemodel(self):
+        """ Test with basemodel object """
+        b = BaseModel()
+        name = b.__class__.__name__ + '.' + b.id
+        dic = {name: b}
+        self.assertEqual(storage.all(), dic)
+
+    def test_user(self):
+        """ Test with basemodel object """
+        b = User()
+        name = b.__class__.__name__ + '.' + b.id
+        dic = {name: b}
+        self.assertEqual(storage.all(), dic)
+
+    def test_city(self):
+        """ Test with basemodel object """
+        b = City()
+        name = b.__class__.__name__ + '.' + b.id
+        dic = {name: b}
+        self.assertEqual(storage.all(), dic)
+
+    def test_amenity(self):
+        """ Test with basemodel object """
+        b = Amenity()
+        name = b.__class__.__name__ + '.' + b.id
+        dic = {name: b}
+        self.assertEqual(storage.all(), dic)
+
+    def test_place(self):
+        """ Test with basemodel object """
+        b = Place()
+        name = b.__class__.__name__ + '.' + b.id
+        dic = {name: b}
+        self.assertEqual(storage.all(), dic)
+
+    def test_review(self):
+        """ Test with basemodel object """
+        b = Review()
+        name = b.__class__.__name__ + '.' + b.id
+        dic = {name: b}
+        self.assertEqual(storage.all(), dic)
+
+    def test_state(self):
+        """ Test with basemodel object """
+        b = State()
+        name = b.__class__.__name__ + '.' + b.id
+        dic = {name: b}
+        self.assertEqual(storage.all(), dic)
+
+    def test_all_class(self):
+        """ Test with all classes """
+        b = BaseModel()
+        u = User()
+        c = City()
+        a = Amenity()
+        p = Place()
+        r = Review()
+        s = State()
+
+        alldic = storage.all()
+
+        self.assertEqual(b, alldic["BaseModel" + '.' + b.id])
+        self.assertEqual(u, alldic["User" + '.' + u.id])
+        self.assertEqual(c, alldic["City" + '.' + c.id])
+        self.assertEqual(a, alldic["Amenity" + '.' + a.id])
+        self.assertEqual(p, alldic["Place" + '.' + p.id])
+        self.assertEqual(r, alldic["Review" + '.' + r.id])
+        self.assertEqual(s, alldic["State" + '.' + s.id])
+
+
+class Test_new(unittest.TestCase):
+    """ Test for the new method """
+
+    def setUp(self):
+        """ Set up for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+        FileStorage._FileStorage__objects = {}
+
+    def tearDown(self):
+        """ Tear down for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+
+    def test_no_arg(self):
+        """ Test no passing argument """
+        with self.assertRaises(TypeError):
+            storage.new()
+
+    def test_extra_arg(self):
+        """ Test no passing argument """
+        b = BaseModel()
+        with self.assertRaises(TypeError):
+            storage.new(b, b)
+
+    def test_basenew(self):
+        """ Tests new method with basemodel """
+        dic = {"id": "123"}
+        b = BaseModel(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        alldic = storage.all()
+        self.assertEqual(alldic, {})
+        storage.new(b)
+        alldic = storage.all()
+        self.assertEqual(b, alldic[key])
+
+    def test_usernew(self):
+        """ Tests new method with user """
+        dic = {"id": "123"}
+        b = User(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        alldic = storage.all()
+        self.assertEqual(alldic, {})
+        storage.new(b)
+        alldic = storage.all()
+        self.assertEqual(b, alldic[key])
+
+    def test_city(self):
+        """ Tests new method with city """
+        dic = {"id": "123"}
+        b = City(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        alldic = storage.all()
+        self.assertEqual(alldic, {})
+        storage.new(b)
+        alldic = storage.all()
+        self.assertEqual(b, alldic[key])
+
+    def test_amenity(self):
+        """ Tests new method with amenity """
+        dic = {"id": "123"}
+        b = Amenity(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        alldic = storage.all()
+        self.assertEqual(alldic, {})
+        storage.new(b)
+        alldic = storage.all()
+        self.assertEqual(b, alldic[key])
+
+    def test_place(self):
+        """ Tests new method with amenity """
+        dic = {"id": "123"}
+        b = Place(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        alldic = storage.all()
+        self.assertEqual(alldic, {})
+        storage.new(b)
+        alldic = storage.all()
+        self.assertEqual(b, alldic[key])
+
+    def test_review(self):
+        """ Tests new method with review """
+        dic = {"id": "123"}
+        b = Review(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        alldic = storage.all()
+        self.assertEqual(alldic, {})
+        storage.new(b)
+        alldic = storage.all()
+        self.assertEqual(b, alldic[key])
+
+    def test_state(self):
+        """ Tests new method with state """
+        dic = {"id": "123"}
+        b = State(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        alldic = storage.all()
+        self.assertEqual(alldic, {})
+        storage.new(b)
+        alldic = storage.all()
+        self.assertEqual(b, alldic[key])
+
+
+class Test_save(unittest.TestCase):
+    """ Test for the new method """
+
+    def setUp(self):
+        """ Set up for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+        FileStorage._FileStorage__objects = {}
+
+    def tearDown(self):
+        """ Tear down for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+
+    def test_save_base(self):
+        """ Save method with base model """
+        dic = {"id": "123"}
+        b = BaseModel(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
         storage.save()
-        self.assertTrue(os.path.exists(filename))
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_base_no_dic(self):
+        """ Save method with base model no kwarg """
+        b = BaseModel()
+        key = b.__class__.__name__ + '.' + b.id
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_base_no_dicX2(self):
+        """ Save method with base model no kwarg """
+        b = BaseModel()
+        b2 = BaseModel()
+        key = b.__class__.__name__ + '.' + b.id
+        key2 = b2.__class__.__name__ + '.' + b2.id
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+            self.assertEqual(b2.id, pobj[key2]["id"])
+            self.assertEqual(b2.__class__.__name__, pobj[key2]["__class__"])
+
+    def test_save_user(self):
+        """ Save method with user """
+        dic = {"id": "123"}
+        b = User(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_user(self):
+        """ Save method with user """
+        dic = {"id": "123"}
+        b = User(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_city(self):
+        """ Save method with city """
+        dic = {"id": "123"}
+        b = City(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_amenity(self):
+        """ Save method with amenity """
+        dic = {"id": "123"}
+        b = Amenity(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_place(self):
+        """ Save method with place """
+        dic = {"id": "123"}
+        b = Place(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_review(self):
+        """ Save method with review """
+        dic = {"id": "123"}
+        b = Review(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_state(self):
+        """ Save method with state """
+        dic = {"id": "123"}
+        b = State(**dic)
+        key = b.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[key]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[key]["__class__"])
+
+    def test_save_all_class(self):
+        """ Save method with all_classes """
+        dic = {"id": "123"}
+        b = BaseModel(**dic)
+        u = User(**dic)
+        c = City(**dic)
+        a = Amenity(**dic)
+        p = Place(**dic)
+        r = Review(**dic)
+        s = State(**dic)
+        keyb = b.__class__.__name__ + '.' + "123"
+        keyu = u.__class__.__name__ + '.' + "123"
+        keyc = c.__class__.__name__ + '.' + "123"
+        keya = a.__class__.__name__ + '.' + "123"
+        keyp = p.__class__.__name__ + '.' + "123"
+        keyr = r.__class__.__name__ + '.' + "123"
+        keys = s.__class__.__name__ + '.' + "123"
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.new(b)
+        storage.new(u)
+        storage.new(c)
+        storage.new(a)
+        storage.new(p)
+        storage.new(r)
+        storage.new(s)
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[keyb]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[keyb]["__class__"])
+            self.assertEqual(u.id, pobj[keyu]["id"])
+            self.assertEqual(u.__class__.__name__, pobj[keyu]["__class__"])
+            self.assertEqual(c.id, pobj[keyc]["id"])
+            self.assertEqual(c.__class__.__name__, pobj[keyc]["__class__"])
+            self.assertEqual(a.id, pobj[keya]["id"])
+            self.assertEqual(a.__class__.__name__, pobj[keya]["__class__"])
+            self.assertEqual(p.id, pobj[keyp]["id"])
+            self.assertEqual(p.__class__.__name__, pobj[keyp]["__class__"])
+            self.assertEqual(r.id, pobj[keyr]["id"])
+            self.assertEqual(r.__class__.__name__, pobj[keyr]["__class__"])
+            self.assertEqual(s.id, pobj[keys]["id"])
+            self.assertEqual(s.__class__.__name__, pobj[keys]["__class__"])
+
+    def test_save_all_class_no_kwarg(self):
+        """ Save method with all_classes no kwarg"""
+        b = BaseModel()
+        u = User()
+        c = City()
+        a = Amenity()
+        p = Place()
+        r = Review()
+        s = State()
+        keyb = b.__class__.__name__ + '.' + b.id
+        keyu = u.__class__.__name__ + '.' + u.id
+        keyc = c.__class__.__name__ + '.' + c.id
+        keya = a.__class__.__name__ + '.' + a.id
+        keyp = p.__class__.__name__ + '.' + p.id
+        keyr = r.__class__.__name__ + '.' + r.id
+        keys = s.__class__.__name__ + '.' + s.id
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        with open(fname, encoding="utf-8") as myfile:
+            pobj = json.load(myfile)
+            self.assertEqual(b.id, pobj[keyb]["id"])
+            self.assertEqual(b.__class__.__name__, pobj[keyb]["__class__"])
+            self.assertEqual(u.id, pobj[keyu]["id"])
+            self.assertEqual(u.__class__.__name__, pobj[keyu]["__class__"])
+            self.assertEqual(c.id, pobj[keyc]["id"])
+            self.assertEqual(c.__class__.__name__, pobj[keyc]["__class__"])
+            self.assertEqual(a.id, pobj[keya]["id"])
+            self.assertEqual(a.__class__.__name__, pobj[keya]["__class__"])
+            self.assertEqual(p.id, pobj[keyp]["id"])
+            self.assertEqual(p.__class__.__name__, pobj[keyp]["__class__"])
+            self.assertEqual(r.id, pobj[keyr]["id"])
+            self.assertEqual(r.__class__.__name__, pobj[keyr]["__class__"])
+            self.assertEqual(s.id, pobj[keys]["id"])
+            self.assertEqual(s.__class__.__name__, pobj[keys]["__class__"])
+
+
+class Test_reload(unittest.TestCase):
+    """ Test for the new method """
+
+    def setUp(self):
+        """ Set up for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+        FileStorage._FileStorage__objects = {}
+
+    def tearDown(self):
+        """ Tear down for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+
+    def test_no_file(self):
+        """ Test if no error happens when to file is present """
+        fname = "file.json"
+        self.assertFalse(path.isfile(fname))
+        storage.reload()
+
+    def test_reload_base(self):
+        """ Test reload method with base model """
+        fname = "file.json"
+        b = BaseModel()
+        b.name = "Holberton"
+        key = b.__class__.__name__ + '.' + b.id
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
         self.assertTrue(len(storage.all()) > 0)
         FileStorage._FileStorage__objects = {}
         self.assertEqual(storage.all(), {})
         storage.reload()
         alldic = storage.all()
-        clist = [baseobj, userobj, cityobj,
-                 ameobj, placeobj, reviewobj, stateobj]
-        for i, j in zip(clist, range(1, 7)):
-            ids = "id" + str(j)
-            self.assertFalse(i == alldic[eval(ids)])
-            self.assertEqual(i.id, alldic[eval(ids)].id)
-            self.assertEqual(i.__class__, alldic[eval(ids)].__class__)
+        self.assertFalse(b == alldic[key])
+        self.assertEqual(b.id, alldic[key].id)
+        self.assertEqual(b.__class__, alldic[key].__class__)
+        self.assertEqual(b.created_at, alldic[key].created_at)
+        self.assertEqual(b.updated_at, alldic[key].updated_at)
+        self.assertEqual(b.name, alldic[key].name)
 
-    def test_engine_011(self):
-        """Test storage new"""
-        mymodel = BaseModel()
-        objid = mymodel.__class__.__name__ + '.'+mymodel.id
-#       self.assertEqual(allobjs, {})
-        allobjs = storage.all()
-        storage.new(mymodel)
-        allobjs = storage.all()
-        self.assertEqual(mymodel, allobjs[objid])
-
-    # def test_engine_012(self):
-    #     """Test creation with a dict"""
-    #     userdic = {'id': "Wiston"}
-    #     mymodel = User(**userdic)
-    #     objid = mymodel.__class__.__name__ + '.'+mymodel.id
-    #     all_objs = storage.all()
-    #     self.assertIsInstance(all_objs, dict)
-    #     self.assertEqual(all_objs, {})
-    #     storage.new(mymodel)
-    #     all_objs = storage.all()
-    #     self.assertEqual(mymodel, all_objs[objid])
-
-    def test_engine_013(self):
-        """ Test empty file"""
-        filename = "file.json"
-        self.assertFalse(os.path.exists(filename))
+    def test_reload_user(self):
+        """ Test reload method with user """
+        fname = "file.json"
+        b = User()
+        b.name = "Holberton"
+        key = b.__class__.__name__ + '.' + b.id
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        self.assertTrue(len(storage.all()) > 0)
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
         storage.reload()
+        alldic = storage.all()
+        self.assertFalse(b == alldic[key])
+        self.assertEqual(b.id, alldic[key].id)
+        self.assertEqual(b.__class__, alldic[key].__class__)
+        self.assertEqual(b.created_at, alldic[key].created_at)
+        self.assertEqual(b.updated_at, alldic[key].updated_at)
+        self.assertEqual(b.name, alldic[key].name)
+
+    def test_reload_city(self):
+        """ Test reload method with city """
+        fname = "file.json"
+        b = City()
+        b.name = "Holberton"
+        key = b.__class__.__name__ + '.' + b.id
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        self.assertTrue(len(storage.all()) > 0)
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
+        storage.reload()
+        alldic = storage.all()
+        self.assertFalse(b == alldic[key])
+        self.assertEqual(b.id, alldic[key].id)
+        self.assertEqual(b.__class__, alldic[key].__class__)
+        self.assertEqual(b.created_at, alldic[key].created_at)
+        self.assertEqual(b.updated_at, alldic[key].updated_at)
+        self.assertEqual(b.name, alldic[key].name)
+
+    def test_reload_amenity(self):
+        """ Test reload method with amenity """
+        fname = "file.json"
+        b = Amenity()
+        b.name = "Holberton"
+        key = b.__class__.__name__ + '.' + b.id
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        self.assertTrue(len(storage.all()) > 0)
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
+        storage.reload()
+        alldic = storage.all()
+        self.assertFalse(b == alldic[key])
+        self.assertEqual(b.id, alldic[key].id)
+        self.assertEqual(b.__class__, alldic[key].__class__)
+        self.assertEqual(b.created_at, alldic[key].created_at)
+        self.assertEqual(b.updated_at, alldic[key].updated_at)
+        self.assertEqual(b.name, alldic[key].name)
+
+    def test_reload_place(self):
+        """ Test reload method with place """
+        fname = "file.json"
+        b = Place()
+        b.name = "Holberton"
+        key = b.__class__.__name__ + '.' + b.id
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        self.assertTrue(len(storage.all()) > 0)
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
+        storage.reload()
+        alldic = storage.all()
+        self.assertFalse(b == alldic[key])
+        self.assertEqual(b.id, alldic[key].id)
+        self.assertEqual(b.__class__, alldic[key].__class__)
+        self.assertEqual(b.created_at, alldic[key].created_at)
+        self.assertEqual(b.updated_at, alldic[key].updated_at)
+        self.assertEqual(b.name, alldic[key].name)
+
+    def test_reload_review(self):
+        """ Test reload method with review """
+        fname = "file.json"
+        b = Review()
+        b.name = "Holberton"
+        key = b.__class__.__name__ + '.' + b.id
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        self.assertTrue(len(storage.all()) > 0)
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
+        storage.reload()
+        alldic = storage.all()
+        self.assertFalse(b == alldic[key])
+        self.assertEqual(b.id, alldic[key].id)
+        self.assertEqual(b.__class__, alldic[key].__class__)
+        self.assertEqual(b.created_at, alldic[key].created_at)
+        self.assertEqual(b.updated_at, alldic[key].updated_at)
+        self.assertEqual(b.name, alldic[key].name)
+
+    def test_reload_state(self):
+        """ Test reload method with state """
+        fname = "file.json"
+        b = State()
+        b.name = "Holberton"
+        key = b.__class__.__name__ + '.' + b.id
+        self.assertFalse(path.isfile(fname))
+        storage.save()
+        self.assertTrue(path.isfile(fname))
+        self.assertTrue(len(storage.all()) > 0)
+        FileStorage._FileStorage__objects = {}
+        self.assertEqual(storage.all(), {})
+        storage.reload()
+        alldic = storage.all()
+        self.assertFalse(b == alldic[key])
+        self.assertEqual(b.id, alldic[key].id)
+        self.assertEqual(b.__class__, alldic[key].__class__)
+        self.assertEqual(b.created_at, alldic[key].created_at)
+        self.assertEqual(b.updated_at, alldic[key].updated_at)
+        self.assertEqual(b.name, alldic[key].name)
 
     def test_reload_all_clases(self):
         """ Test reload method for all classes """
@@ -248,9 +657,9 @@ class Test_engine(unittest.TestCase):
         keyp = p.__class__.__name__ + '.' + p.id
         keyr = r.__class__.__name__ + '.' + r.id
         keys = s.__class__.__name__ + '.' + s.id
-        self.assertFalse(os.path.isfile(fname))
+        self.assertFalse(path.isfile(fname))
         storage.save()
-        self.assertTrue(os.path.isfile(fname))
+        self.assertTrue(path.isfile(fname))
         self.assertTrue(len(storage.all()) > 0)
         FileStorage._FileStorage__objects = {}
         self.assertEqual(storage.all(), {})
