@@ -213,17 +213,17 @@ class Test_engine(unittest.TestCase):
         allobjs = storage.all()
         self.assertEqual(mymodel, allobjs[objid])
 
-    # def test_engine_012(self):
-    #     """Test creation with a dict"""
-    #     userdic = {'id': "Wiston"}
-    #     mymodel = User(**userdic)
-    #     objid = mymodel.__class__.__name__ + '.'+mymodel.id
-    #     all_objs = storage.all()
-    #     self.assertIsInstance(all_objs, dict)
-    #     self.assertEqual(all_objs, {})
-    #     storage.new(mymodel)
-    #     all_objs = storage.all()
-    #     self.assertEqual(mymodel, all_objs[objid])
+    def test_engine_012(self):
+        """Test creation with a dict"""
+        userdic = {'id': "Wiston"}
+        mymodel = User(**userdic)
+        objid = mymodel.__class__.__name__ + '.'+mymodel.id
+        all_objs = storage.all()
+        self.assertIsInstance(all_objs, dict)
+        self.assertEqual(all_objs, {})
+        storage.new(mymodel)
+        all_objs = storage.all()
+        self.assertEqual(mymodel, all_objs[objid])
 
     def test_engine_013(self):
         """ Test empty file"""
@@ -231,6 +231,12 @@ class Test_engine(unittest.TestCase):
         self.assertFalse(os.path.exists(filename))
         storage.reload()
 
-    def test_instantiation(self):
-        """make an instance of storage class"""
+    def test_engine_014(self):
+        """Instance of storage class"""
         self.assertEqual(type(storage).__name__, "FileStorage")
+
+    def test_engine015(self):
+        """File storage class atributes"""
+        self.assertTrue(hasattr(FileStorage, "_FileStorage__file_path"))
+        self.assertTrue(hasattr(FileStorage, "_FileStorage__objects"))
+        self.assertEqual(getattr(FileStorage, "_FileStorage__objects"), {})
