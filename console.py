@@ -249,7 +249,7 @@ class HBNBCommand(cmd.Cmd):
             endp_p = len(cp2[1])-1
             if mycmd == "update":
                 myargs = cp2[1].split(', ', 1)[1]
-# "38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89}
+    # "38f22813-2753-4d42-b37c-57a17f1e4f88", {'first_name': "John", "age": 89}
                 if count1 == 1 and count2 == 1 and '}' == cp2[1][endp_p]:
 
                     myargs = myargs.split(', ', 1)
