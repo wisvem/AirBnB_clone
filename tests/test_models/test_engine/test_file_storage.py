@@ -254,6 +254,17 @@ class Test_engine(unittest.TestCase):
         fs.save()
         self.assertTrue(os.path.exists(path))
 
+    def test_methods_docstring(self):
+        """
+        Tests docstring for methods
+        """
+        methods = inspect.getmembers(FileStorage, predicate=inspect.ismethod)
+        for name, func in methods:
+            self.assertTrue(len(func.__doc__) > 5)
+        methods = inspect.getmembers(FileStorage, predicate=inspect.isfunction)
+        for name, func in methods:
+            self.assertTrue(len(func.__doc__) > 5)
+
 
 
 # my_dict = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
