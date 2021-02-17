@@ -132,8 +132,16 @@ class Test_console(unittest.TestCase):
             self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
             for _class in self.clis:
                 with patch('sys.stdout', new=StringIO()) as f:
-                    command = "create"+ " " + _class
+                    command = "create" + " " + _class
                     HBNBCommand().onecmd(command)
                     _id = f.getvalue().strip()
                     key = _class + "." + _id
                     self.assertTrue(key in storage.all().keys())
+
+    def test_unknown(self):
+        """ Command that does not exist """
+        msg = "*** Unknown syntax: asd\n"
+        with patch('sys.stdout', new=io.StringIO()) as f:
+            HBNBCommand().onecmd("asd")
+            st = f.getvalue()
+            self.assertEqual(msg, st)
