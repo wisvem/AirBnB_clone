@@ -128,3 +128,30 @@ class Test_console(unittest.TestCase):
             for key, value in storage.all().items():
                 _id = value.id
             self.assertEqual(f.getvalue().strip(), _id)
+            self.assertEqual(uuid.UUID(f.getvalue().strip()).version, 4)
+
+
+    def test_create_valid_class(self):
+        """  Test for create with existing id  """
+        classes = ["BaseModel", "User", "State", "City",
+                  "Amenity", "Place", "Review"]
+        for i in classes:
+            with patch('sys.stdout', new=StringIO()) as f:
+                HBNBCommand().onecmd("create " + i)
+                id_st = f.getvalue()
+                alldic = storage.all()
+                self.assertTrue((i + '.' + id_st[:-1]) in alldic.keys())
+        self.assertEqual(len(alldic), len(classes))
+
+
+
+    # def test_show(self):
+    #     """Test for show command
+    #     """
+    #     with patch('sys.stdout', new=StringIO()) as mock:
+    #         HBNBCommand().onecmd("create BaseModel")
+    #         for key, value in storage.all().items():
+    #             _id = value.id
+    #         HBNBCommand().onecmd("show BaseModel {}".format(_id)
+    #         _show = str(my_model)
+    #         self.assertEqual(mock.getvalue(), _show)
