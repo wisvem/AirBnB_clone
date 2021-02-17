@@ -14,11 +14,12 @@ from models.state import State
 from models import storage
 from models.engine.file_storage import FileStorage
 import inspect
-from unittest.mock import patch
+from unittest.mock import patch, create_autospec
 from io import StringIO
 from console import HBNBCommand
 import uuid
 from time import sleep
+import sys
 
 
 class Test_console(unittest.TestCase):
@@ -147,99 +148,36 @@ class Test_console(unittest.TestCase):
             self.assertEqual(msg, st)
 
 
-class Test_destroy(unittest.TestCase):
+class TestConsole00(unittest.TestCase):
 
-    """ Tests the destroy commands """
+    clis = ['BaseModel', 'User', 'Place', 'City', 'Amenity', 'Review', 'State']
+
+    def teardown(cls):
+        """Final statement"""
+        try:
+            os.remove("file.json")
+        except:
+            pass
 
     def setUp(self):
-        """ Set up for all methods """
-        try:
-            os.remove("file.json")
-        except:
-            pass
-        FileStorage._FileStorage__objects = {}
+        self.mock_stdin = create_autospec(sys.stdin)
+        self.mock_stdout = create_autospec(sys.stdout)
 
-    def tearDown(self):
-        """ Tear down for all methods """
-        try:
-            os.remove("file.json")
-        except:
-            pass
+    def create_session(self, server=None):
+        return HBNBCommand(stdin=self.mock_stdin, stdout=self.mock_stdout)
 
-    def test_destroy_no_class(self):
-        """  Test for destroy with class missing """
-        msg = "** class name missing **\n"
-        with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd("destroy")
-            st = f.getvalue()
-            self.assertEqual(msg, st)
-
-    def test_new_destroy_no_class(self):
-        """  Test for destroy with class missing by second method """
-        msg = "** class doesn't exist **\n"
-        with patch('sys.stdout', new=StringIO()) as f:
-            pre_cmd = HBNBCommand().precmd("MyModel.destroy()")
-            HBNBCommand().onecmd(pre_cmd)
-            st = f.getvalue()
-            if st[0] == "\n":
-                msg = "\n" + msg
-            self.assertEqual(msg, st)
-
-    def test_destroy_invalid_class(self):
-        """  Test for destroy with invalid class """
-        msg = "** class doesn't exist **\n"
-
-        with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd("destroy MyModel")
-            st = f.getvalue()
-            self.assertEqual(msg, st)
-
-    def test_destroy_no_id(self):
-        """  Test for destroy with id missing """
-        msg = "** instance id missing **\n"
-        classes = ["BaseModel", "User", "State", "City",
-                   "Amenity", "Place", "Review"]
-        for i in classes:
-            with patch('sys.stdout', new=StringIO()) as f:
-                HBNBCommand().onecmd("destroy " + i)
-                st = f.getvalue()
-                self.assertEqual(msg, st)
-
-    def test_new_destroy_no_id(self):
-        """  Test for destroy with id missing """
-        msg = "** instance id missing **\n"
-        classes = ["BaseModel", "User", "State", "City",
-                   "Amenity", "Place", "Review"]
-        for i in classes:
-            with patch('sys.stdout', new=StringIO()) as f:
-                pre_cmd = HBNBCommand().precmd(i + ".destroy()")
-                HBNBCommand().onecmd(pre_cmd)
-                st = f.getvalue()
-                if st[0] == "\n":
-                    msg = "\n" + msg
-                self.assertEqual(msg, st)
-
-    def test_destroy_no_existent_id(self):
-        """  Test for destroy with non-existent id """
-        msg = "** no instance found **\n"
-        classes = ["BaseModel", "User", "State", "City",
-                   "Amenity", "Place", "Review"]
-        for i in classes:
-            with patch('sys.stdout', new=StringIO()) as f:
-                HBNBCommand().onecmd("destroy " + i + " 123")
-                st = f.getvalue()
-                self.assertEqual(msg, st)
-
-    def test_new_destroy_no_existent_id(self):
-        """  Test for destroy with non-existent id """
-        msg = "** no instance found **\n"
-        classes = ["BaseModel", "User", "State", "City",
-                   "Amenity", "Place", "Review"]
-        for i in classes:
-            with patch('sys.stdout', new=StringIO()) as f:
-                pre_cmd = HBNBCommand().precmd(i + ".destroy(123)")
-                HBNBCommand().onecmd(pre_cmd)
-                st = f.getvalue()
-                if st[0] == "\n":
-                    msg = "\n" + msg
-                self.assertEqual(msg, st)
+    def test_create(self):
+        """Tesing create command"""
+        cli = self.create_session()
+        with patch('sys.stdout', new=StringIO()) as Output:
+            self.assertFalse(cli.onecmd('create'))
+        self.assertEqual('** class name missing **',
+                         Output.getvalue().strip())
+        with patch('sys.stdout', new=StringIO()) as Output:
+            self.assertFalse(cli.onecmd('create hola'))
+        self.assertEqual("** class doesn't exist **",
+                         Output.getvalue().strip())
+        for cls in self.clis:
+            with patch('sys.stdout', new=StringIO()) as Output:
+                self.assertFalse(cli.onecmd('create {}'.format(cls)))
+            self.assertEqual(36, len(Output.getvalue().strip()))
