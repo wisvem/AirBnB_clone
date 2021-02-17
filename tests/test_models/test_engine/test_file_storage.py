@@ -248,10 +248,12 @@ class Test_engine(unittest.TestCase):
 
     def test_engine_016(self):
         """Test if all_obs is empty"""
-        FileStorage._FileStorage__objects = []
-        self.assertEqual(FileStorage._FileStorage__objects, [])
         fs = FileStorage()
+        path = "file.json"
         self.assertIsInstance(fs, FileStorage)
+        fs.save()
+        self.assertTrue(os.path.exists(path))
+
 
 
 # my_dict = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
