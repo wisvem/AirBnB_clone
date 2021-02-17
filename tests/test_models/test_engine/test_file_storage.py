@@ -265,6 +265,19 @@ class Test_engine(unittest.TestCase):
         for name, func in methods:
             self.assertTrue(len(func.__doc__) > 5)
 
+    def test_save_another_instance(self):
+        """
+        Tests for save another instance in path
+        """
+        path = "file.json"
+        fs = FileStorage()
+        bm2_instance = BaseModel()
+        bm2_instance.save()
+        key = type(bm2_instance).__name__ + "." + str(bm2_instance.id)
+        with open(path, mode="r", encoding="utf-8") as f:
+            reader = json.load(f)
+        self.assertEqual(
+            reader[key], fs.all()[key].to_dict())
 
 
 # my_dict = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
