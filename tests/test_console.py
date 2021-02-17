@@ -109,3 +109,11 @@ class Test_console(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help update")
             self.assertEqual(f.getvalue(), _help)
+
+    def test_help_no_command(self):
+        """Test for help a command that doesnt exist
+        """
+        _help = "*** No help on hello\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help hello")
+            self.assertEqual(f.getvalue(), _help)
