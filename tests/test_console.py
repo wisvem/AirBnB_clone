@@ -40,11 +40,19 @@ class Test_console(unittest.TestCase):
         if os.path.exists("file.json"):
             os.remove("file.json")
 
-    def test_help(self):
-        """Test for help command
+    def test_help_quit(self):
+        """Test for help quit command
         """
         help_quit = 'Quit method to exit form cmd '
         help_quit += 'program (Usage: quit)\n        \n'
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help quit")
             self.assertEqual(f.getvalue(), help_quit)
+
+    def test_help_EOF(self):
+        """Test for help EOF command
+        """
+        help_EOF = 'EOF method to exit cmd program\n        \n'
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help EOF")
+            self.assertEqual(f.getvalue(), help_EOF)
