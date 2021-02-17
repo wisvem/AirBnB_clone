@@ -14,10 +14,12 @@ from models.state import State
 from models import storage
 from models.engine.file_storage import FileStorage
 import inspect
-from unittest.mock import patch
+from unittest.mock import patch, create_autospec
 from io import StringIO
 from console import HBNBCommand
 import uuid
+from time import sleep
+import sys
 
 
 class Test_console(unittest.TestCase):
@@ -129,3 +131,26 @@ class Test_console(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create hello")
             self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
+            for _class in self.clis:
+                with patch('sys.stdout', new=StringIO()) as f:
+                    command = "create" + " " + _class
+                    HBNBCommand().onecmd(command)
+                    _id = f.getvalue().strip()
+                    key = _class + "." + _id
+                    self.assertTrue(key in storage.all().keys())
+
+    def test_unknown(self):
+        """ Command that does not exist """
+        msg = "*** Unknown syntax: asd\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("asd")
+            st = f.getvalue()
+            self.assertEqual(msg, st)
+
+    def test_prompt_string(self):
+        self.assertEqual("(hbnb) ", HBNBCommand.prompt)
+
+    def test_empty_line(self):
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd(""))
+            self.assertEqual("", output.getvalue().strip())
