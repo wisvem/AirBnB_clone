@@ -18,6 +18,7 @@ from unittest.mock import patch
 from io import StringIO
 from console import HBNBCommand
 import uuid
+from time import sleep
 
 
 class Test_console(unittest.TestCase):
@@ -129,3 +130,10 @@ class Test_console(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create hello")
             self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
+            for _class in self.clis:
+                with patch('sys.stdout', new=StringIO()) as f:
+                    command = "create"+ " " + _class
+                    HBNBCommand().onecmd(command)
+                    _id = f.getvalue().strip()
+                    key = _class + "." + _id
+                    self.assertTrue(key in storage.all().keys())
