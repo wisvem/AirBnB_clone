@@ -43,16 +43,69 @@ class Test_console(unittest.TestCase):
     def test_help_quit(self):
         """Test for help quit command
         """
-        help_quit = 'Quit method to exit form cmd '
-        help_quit += 'program (Usage: quit)\n        \n'
+        _help = 'Quit method to exit form cmd '
+        _help += 'program (Usage: quit)\n'
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help quit")
-            self.assertEqual(f.getvalue(), help_quit)
+            self.assertEqual(f.getvalue(), _help)
 
     def test_help_EOF(self):
         """Test for help EOF command
         """
-        help_EOF = 'EOF method to exit cmd program\n        \n'
+        _help = 'EOF method to exit cmd program\n'
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help EOF")
-            self.assertEqual(f.getvalue(), help_EOF)
+            self.assertEqual(f.getvalue(), _help)
+
+    def test_help_all(self):
+        """Test for help all command
+        """
+        _help = "[Usage: all <class name>]or [Usage: all] or "\
+                "[Usage: <class name>.all()]\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help all")
+            self.assertEqual(f.getvalue(), _help)
+
+    def test_help_count(self):
+        """Test for help count command
+        """
+        _help = "[Usage: <class name>.count()]\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help count")
+            self.assertEqual(f.getvalue(), _help)
+
+    def test_help_create(self):
+        """Test for help create command
+        """
+        _help = "[Usage: create <class name>]\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help create")
+            self.assertEqual(f.getvalue(), _help)
+
+    def test_help_destroy(self):
+        """Test for help EOF command
+        """
+        _help = "[Usage: destroy <class name> <id>] or "\
+                "[Usage: <class name>.destroy(<id>)]\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help destroy")
+            self.assertEqual(f.getvalue(), _help)
+
+    def test_help_show(self):
+        """Test for help show command
+        """
+        _help = "[Usage: show <class name> <id>] or "\
+                "[Usage: <class name>.show(<id>)]\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help show")
+            self.assertEqual(f.getvalue(), _help)
+
+    def test_help_update(self):
+        """Test for help update command
+        """
+        _help = "[Usage: update <class name> <id> <attribute name> "\
+                '"<attribute value>"] or [Usage: <class name>.update(<id>,'\
+                "<attribute name>, <attribute value>)]\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help update")
+            self.assertEqual(f.getvalue(), _help)
