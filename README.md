@@ -68,12 +68,19 @@ Classes inherited from Base Model:
 
 #### `/tests` directory contains all unit test cases for this project:
 [/test_models/test_base_model.py](/tests/test_models/test_base_model.py) - Contains the Test_BaseModel_class
+
 [/test_models/test_amenity.py](/tests/test_models/test_amenity.py) - Contains the Test_Amenity_class
+
 [/test_models/test_city.py](/tests/test_models/test_city.py) - Contains the Test_City_class
+
 [/test_models/test_place.py](/tests/test_models/test_place.py) - Contains the Test_Place_class
+
 [/test_models/test_review.py](/tests/test_models/test_review.py) - Contains the Test_Review_class
+
 [/test_models/state.py](/tests/test_models/test_state.py) - Contains the Test_State_class
+
 [/test_models/user.py](/tests/test_models/test_user.py) - Contains the Test_User_class
+
 [/test_models/test_engine/test_file_storage.py](/tests/test_models/test_file_storage.py) - Contains the Test_engine
 
 ## Examples of use
