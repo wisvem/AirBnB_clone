@@ -126,3 +126,6 @@ class Test_console(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create")
             self.assertEqual(f.getvalue().strip(), "** class name missing **")
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create hello")
+            self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
