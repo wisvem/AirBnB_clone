@@ -141,7 +141,7 @@ class Test_console(unittest.TestCase):
     def test_unknown(self):
         """ Command that does not exist """
         msg = "*** Unknown syntax: asd\n"
-        with patch('sys.stdout', new=io.StringIO()) as f:
+        with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("asd")
             st = f.getvalue()
             self.assertEqual(msg, st)
