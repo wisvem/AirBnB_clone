@@ -17,12 +17,14 @@ import inspect
 from unittest.mock import patch
 from io import StringIO
 from console import HBNBCommand
+import uuid
 
 
 class Test_console(unittest.TestCase):
     """Test cases for the console.py file
     """
     clis = ['BaseModel', 'User', 'Place', 'City', 'Amenity', 'Review', 'State']
+    storage = FileStorage()
 
     def setUp(self):
         """set environment to start testing"""
@@ -117,3 +119,12 @@ class Test_console(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help hello")
             self.assertEqual(f.getvalue(), _help)
+
+    def test_create(self):
+        """Test for create command
+        """
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create BaseModel")
+            for key, value in storage.all().items():
+                _id = value.id
+            self.assertEqual(f.getvalue().strip(), _id)
