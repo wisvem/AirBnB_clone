@@ -41,6 +41,8 @@ This project is interpreted/tested on Ubuntu 14.04 LTS using python3 (version 3.
 * `show` - Prints the string representation of an instance based on the class name and id.
 * `all` - Prints all string representation of all instances based or not on the class name. 
 * `update` - Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). 
+* `count` - Retrieves the number of instances of a class.
+* `precmd` - Parse the commad with the format `<class name>.command` to send it to the way that methods receive it. 
 
 #### `models/` --- Directory that contains main classes:
 [base_model.py](/models/base_model.py) - The BaseModel class is the main class  where where other classes will be derived. This class gives the main attributes like id, created and updated time when a instance occurs.
