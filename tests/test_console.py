@@ -148,36 +148,13 @@ class Test_console(unittest.TestCase):
             self.assertEqual(msg, st)
 
 
-class TestConsole00(unittest.TestCase):
+class TestHBNBCommand_prompting(unittest.TestCase):
+    """Unittests for testing prompting of the HBNB command interpreter."""
 
-    clis = ['BaseModel', 'User', 'Place', 'City', 'Amenity', 'Review', 'State']
+    def test_prompt_string(self):
+        self.assertEqual("(hbnb) ", HBNBCommand.prompt)
 
-    def teardown(cls):
-        """Final statement"""
-        try:
-            os.remove("file.json")
-        except:
-            pass
-
-    def setUp(self):
-        self.mock_stdin = create_autospec(sys.stdin)
-        self.mock_stdout = create_autospec(sys.stdout)
-
-    def create_session(self, server=None):
-        return HBNBCommand(stdin=self.mock_stdin, stdout=self.mock_stdout)
-
-    def test_create(self):
-        """Tesing create command"""
-        cli = self.create_session()
-        with patch('sys.stdout', new=StringIO()) as Output:
-            self.assertFalse(cli.onecmd('create'))
-        self.assertEqual('** class name missing **',
-                         Output.getvalue().strip())
-        with patch('sys.stdout', new=StringIO()) as Output:
-            self.assertFalse(cli.onecmd('create hola'))
-        self.assertEqual("** class doesn't exist **",
-                         Output.getvalue().strip())
-        for cls in self.clis:
-            with patch('sys.stdout', new=StringIO()) as Output:
-                self.assertFalse(cli.onecmd('create {}'.format(cls)))
-            self.assertEqual(36, len(Output.getvalue().strip()))
+    def test_empty_line(self):
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd(""))
+            self.assertEqual("", output.getvalue().strip())
