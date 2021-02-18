@@ -162,3 +162,13 @@ class Test_console(unittest.TestCase):
     def test_EOF_exits(self):
         with patch("sys.stdout", new=StringIO()) as output:
             self.assertTrue(HBNBCommand().onecmd("EOF"))
+
+    def test_create_invalid_syntax(self):
+        correct = "*** Unknown syntax: MyModel.create()"
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("MyModel.create()"))
+            self.assertEqual(correct, output.getvalue().strip())
+        correct = "*** Unknown syntax: BaseModel.create()"
+        with patch("sys.stdout", new=StringIO()) as output:
+            self.assertFalse(HBNBCommand().onecmd("BaseModel.create()"))
+            self.assertEqual(correct, output.getvalue().strip())
