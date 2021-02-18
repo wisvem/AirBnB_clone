@@ -45,7 +45,7 @@ This project is interpreted/tested on Ubuntu 14.04 LTS using python3 (version 3.
 * `precmd` - Parse the commad with the format `<class name>.command` to send it to the way that methods receive it. 
 
 #### `models/` --- Directory that contains main classes:
-[base_model.py](/models/base_model.py) - The BaseModel class is the main class  where where other classes will be derived. This class gives the main attributes like id, created and updated time when a instance occurs.
+[base_model.py](/models/base_model.py) - The BaseModel class is main class  where where other classes will be derived. This class gives the main attributes like id, created and updated time when a instance occurs.
 
 Methods inside this class:
 * `def __init__(self, *args, **kwargs)` - Initialization of the BaseModel class
