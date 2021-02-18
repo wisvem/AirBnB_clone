@@ -72,7 +72,6 @@ Classes inherited from Base Model:
 
 ![Alt text here](Airbnb_UML.svg)
 
-
 #### `/tests` directory contains all unit test cases for this project:
  * [/test_models/test_base_model.py](/tests/test_models/test_base_model.py): Contains the Test_BaseModel_class 
  * [/test_models/test_amenity.py](/tests/test_models/test_amenity.py) : Contains the Test_Amenity_class
