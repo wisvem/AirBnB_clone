@@ -153,4 +153,4 @@ class Test_console(unittest.TestCase):
     def test_empty_line(self):
         with patch("sys.stdout", new=StringIO()) as output:
             self.assertFalse(HBNBCommand().onecmd(""))
-            self.assertEqual("", output.getvalue().strip())
+            self.assertEqual("5", output.getvalue().strip())
