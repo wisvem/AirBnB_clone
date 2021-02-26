@@ -7,11 +7,7 @@
 	border-radius: 4px;
 	border-style: solid;
 	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
 }
-
 .filters > button
 {
 	font-size: 18px;
@@ -21,7 +17,10 @@
 	width: 20%;
 	border: none;
 	border-radius: 4px;
-	margin-right: 30px;
+	position: absolute;
+	right: 30px;
+	top: 50%;
+	transform: translateY(-50%);
 }
 .filters > button:hover
 {

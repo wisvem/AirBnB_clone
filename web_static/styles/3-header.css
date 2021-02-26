@@ -10,7 +10,7 @@ header
 	display: flex;
 	justify-content:left;
 	align-items:center;
-	background-image:url('/images/logo.png');
+	background-image:url('../images/logo.png');
 	background-repeat: no-repeat;
 	background-position-x: 20px;
 }
