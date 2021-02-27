@@ -110,3 +110,8 @@
 {
 	margin-top: 5px;
 }
+.amenities .popover > li > p
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+} 
