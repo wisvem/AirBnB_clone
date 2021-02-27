@@ -96,7 +96,7 @@
 {
 	padding-left: 50px;
 }
-.popover li h2
+.popover > li > h2
 {
 	font-size: 16px;
 	margin-top: 0px;
