@@ -6,9 +6,10 @@ footer
 	border-top-color: #CCCCCC;
 	height:60px;
 	width:100%;
-	position:relative;
-	bottom:0;
+	position:absolute;
+	margin-top: auto;
 	display: flex;
 	justify-content:center;
 	align-items:center;
+	bottom: 0%;
 }

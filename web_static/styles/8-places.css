@@ -93,3 +93,7 @@ article > h2
 {
 	font-weight: bold;
 }
+footer
+{
+	bottom: auto;
+}
