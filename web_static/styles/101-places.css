@@ -29,6 +29,7 @@ article > h2
 	text-align: center;
 	font-size: 30px;
 	margin: auto;
+	flex-direction: column;
 }
 .price_by_night
 {
@@ -147,4 +148,8 @@ article > h2
 	font-size: 12px;
 	margin-top: 0px;
 	margin-bottom: 25px;
+}
+footer
+{
+	bottom: auto;
 }
